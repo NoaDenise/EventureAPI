@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EventureAPI.Models
+namespace EventureAPI.Models.DTOs
 {
-    public class Activity
+    public class ActivityCreateDTO
     {
-        [Key]
         public int ActivityId { get; set; }
 
         [Required]
@@ -12,7 +11,7 @@ namespace EventureAPI.Models
         public User User { get; set; }
 
         [Required]
-        [StringLength(100, MinimumLength = 2, ErrorMessage = "Namnet måste innehålla mellan 2 - 100 tecken" )]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Namnet måste innehålla mellan 2 - 100 tecken")]
         public string ActivityName { get; set; }
 
         [Required]
@@ -31,18 +30,5 @@ namespace EventureAPI.Models
 
         [StringLength(2000, MinimumLength = 3, ErrorMessage = "Kontaktinfo måste vara mellan 3 - 2000 tecken")]
         public string? ContactInfo { get; set; }
-        [Required]
-        public bool IsApproved { get; set; }
-
-        [Required]
-        public bool IsFree { get; set; }
-        [Required]
-        public bool Is18Plus { get; set; }
-        [Required]
-        public bool IsFamilyFriendly { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Rating> Ratings { get; set; }
-        public virtual ICollection<ActivityCategory> ActivityCategories { get; set; }
-        public virtual ICollection<Attendance> Attendances { get; set; }
     }
 }

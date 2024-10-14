@@ -35,7 +35,6 @@
     <Folder Include="Controllers\CategoriesController\" />
     <Folder Include="Controllers\UserController\" />
     <Folder Include="Controllers\RatingsController\" />
-    <Folder Include="Models\DTOs\" />
   </ItemGroup>
 
 </Project>
