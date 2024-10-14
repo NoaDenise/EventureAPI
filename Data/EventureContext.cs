@@ -10,13 +10,13 @@ namespace EventureAPI.Data
         public EventureContext(DbContextOptions<EventureContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Event> Events { get; set; }
+        public DbSet<Activity> Activities { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<UserCategory> UserCategories { get; set; }
-        public DbSet<EventCategory> EventCategories { get; set; }
+        public DbSet<ActivityCategory> ActivityCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -53,9 +53,9 @@ namespace EventureAPI.Data
             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Attendance>()
-            .HasOne(a => a.Event)
+            .HasOne(a => a.Activity)
             .WithMany(e => e.Attendances)
-            .HasForeignKey(a => a.EventId)
+            .HasForeignKey(a => a.ActivityId)
             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Comment>()
@@ -65,9 +65,9 @@ namespace EventureAPI.Data
             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Comment>()
-            .HasOne(c => c.Event)
+            .HasOne(c => c.Activity)
             .WithMany(e => e.Comments)
-            .HasForeignKey(c => c.EventId)
+            .HasForeignKey(c => c.ActivityId)
             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Rating>()
@@ -77,9 +77,9 @@ namespace EventureAPI.Data
             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Rating>()
-            .HasOne(r => r.Event)
+            .HasOne(r => r.Activity)
             .WithMany(e => e.Ratings)
-            .HasForeignKey(r => r.EventId)
+            .HasForeignKey(r => r.ActivityId)
             .OnDelete(DeleteBehavior.Restrict);
         }
     }

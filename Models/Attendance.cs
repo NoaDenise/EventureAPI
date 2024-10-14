@@ -10,8 +10,8 @@ namespace EventureAPI.Models
         public string UserId { get; set; }
         public virtual User User { get; set; }
 
-        public int EventId { get; set; }
-        public virtual Event Event { get; set; }
+        public int ActivityId { get; set; }
+        public virtual Activity Activity { get; set; }
         
         public bool? IsAttending { get; set; }
     }
