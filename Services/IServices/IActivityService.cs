@@ -1,13 +1,14 @@
 ﻿using EventureAPI.Models;
+using EventureAPI.Models.DTOs;
 
 namespace EventureAPI.Services.IServices
 {
     public interface IActivityService
     {
         Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesAsync();
-        Task AddActivityAsync(ActivityCreateDTO activity);
+        Task AddActivityAsync(ActivityCreateEditDTO activityDto);
         Task DeleteActivity(int activityId);
-        Task EditActivityAsync(int activityId, ActivityCreateDTO activity);
+        Task EditActivityAsync(int activityId, ActivityCreateEditDTO activityDto);
         Task AddActivityAsync(Activity activity);
         Task DeleteActivity(Activity activity);
         Task EditActivityAsync(Activity activity);
