@@ -2,7 +2,7 @@
 
 namespace EventureAPI.Models.DTOs
 {
-    public class ActivityCreateDTO
+    public class ActivityCreateEditDTO
     {
         public int ActivityId { get; set; }
 

@@ -18,9 +18,5 @@ namespace EventureAPI.Models
         [Range(1, 5)]
         public int? Score { get; set; }
 
-      
-       
-
-      
     }
 }

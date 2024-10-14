@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\DTOs\ActivityCreateDTO.cs" />
     <Compile Remove="Services\IServices\IEventService.cs" />
   </ItemGroup>
 
