@@ -2,10 +2,10 @@
 
 namespace EventureAPI.Models
 {
-    public class Event
+    public class Activity
     {
         [Key]
-        public int EventId { get; set; }
+        public int ActivityId { get; set; }
 
         [Required]
         public string UserId { get; set; }
@@ -13,14 +13,14 @@ namespace EventureAPI.Models
 
         [Required]
         [StringLength(100, MinimumLength = 2, ErrorMessage = "Namnet måste innehålla mellan 2 - 100 tecken" )]
-        public string EventName { get; set; }
+        public string ActivityName { get; set; }
 
         [Required]
         [StringLength(5000, MinimumLength = 5, ErrorMessage = "Beskrivningen måste vara mellan 5 - 5000 tecken")]
-        public string EventDescription { get; set; }
-        public DateTime? DateOfEvent { get; set; }
+        public string ActivityDescription { get; set; }
+        public DateTime? DateOfActivity { get; set; }
         [Required]
-        public string EventLocation { get; set; }
+        public string ActivityLocation { get; set; }
 
         [StringLength(2000, MinimumLength = 5, ErrorMessage = "Länken måste vara mellan 5 - 2000 tecken")]
         public string? ImageUrl { get; set; }
@@ -40,7 +40,7 @@ namespace EventureAPI.Models
         public bool IsFamilyFriendly { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Rating> Ratings { get; set; }
-        public virtual ICollection<EventCategory> EventCategories { get; set; }
+        public virtual ICollection<ActivityCategory> ActivityCategories { get; set; }
         public virtual ICollection<Attendance> Attendances { get; set; }
     }
 }

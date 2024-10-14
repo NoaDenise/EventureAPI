@@ -16,7 +16,7 @@ namespace EventureAPI.Models
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Rating> Ratings { get; set; }
         public ICollection<Attendance> Attendances { get; set; }
-        public ICollection<Event> Events { get; set; }
+        public ICollection<Activity> Activities { get; set; }
 
     }
 }

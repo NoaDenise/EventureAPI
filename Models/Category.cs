@@ -13,7 +13,7 @@ namespace EventureAPI.Models
 
         [MaxLength(500)]
         public string? CategoryDescription { get; set; }
-        public virtual ICollection<EventCategory> EventCategories { get; set; }
+        public virtual ICollection<ActivityCategory> ActivityCategories { get; set; }
         public virtual ICollection<UserCategory> UserCategories { get; set; }
     }
 }

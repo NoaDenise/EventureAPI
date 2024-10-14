@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\IServices\IEventService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
@@ -23,8 +28,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Services\" />
+    <Folder Include="Controllers\ActivitiesController\" />
+    <Folder Include="Controllers\CommentsController\" />
+    <Folder Include="Controllers\AdminController\" />
+    <Folder Include="Controllers\AttendancesController\" />
+    <Folder Include="Controllers\CategoriesController\" />
+    <Folder Include="Controllers\UserController\" />
+    <Folder Include="Controllers\RatingsController\" />
+    <Folder Include="Models\DTOs\" />
   </ItemGroup>
 
 </Project>
