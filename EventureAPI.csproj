@@ -28,14 +28,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\ActivitiesController\" />
-    <Folder Include="Controllers\CommentsController\" />
-    <Folder Include="Controllers\AdminController\" />
-    <Folder Include="Controllers\AttendancesController\" />
-    <Folder Include="Controllers\CategoriesController\" />
-    <Folder Include="Controllers\UserController\" />
-    <Folder Include="Controllers\RatingsController\" />
-  </ItemGroup>
-
 </Project>
