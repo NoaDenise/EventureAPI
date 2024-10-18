@@ -62,7 +62,7 @@ namespace EventureAPI
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapIdentityApi<User>();
+            //app.MapIdentityApi<User>();
 
             app.MapControllers();
 
