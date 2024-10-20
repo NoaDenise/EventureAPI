@@ -1,6 +1,10 @@
 
 using EventureAPI.Data;
+using EventureAPI.Data.Repositories.IRepositories;
+using EventureAPI.Data.Repositories;
 using EventureAPI.Models;
+using EventureAPI.Services.IServices;
+using EventureAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +44,7 @@ namespace EventureAPI
                     };
                 });
 
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -47,6 +52,9 @@ namespace EventureAPI
             builder.Services.AddIdentityCore<User>()
                 .AddEntityFrameworkStores<EventureContext>()
                 .AddApiEndpoints();
+
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             var app = builder.Build();
 
