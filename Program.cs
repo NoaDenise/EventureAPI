@@ -1,6 +1,10 @@
 
 using EventureAPI.Data;
+using EventureAPI.Data.Repositories;
+using EventureAPI.Data.Repositories.IRepositories;
 using EventureAPI.Models;
+using EventureAPI.Services;
+using EventureAPI.Services.IServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -43,10 +47,14 @@ namespace EventureAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            //Adding scope for repo and services
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUserService, UserService>();
+
             builder.Services.AddAuthorization();
-            builder.Services.AddIdentityCore<User>()
+            builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<EventureContext>()
-                .AddApiEndpoints();
+                .AddDefaultTokenProviders();
 
             var app = builder.Build();
 

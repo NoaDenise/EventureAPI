@@ -28,7 +28,7 @@ namespace EventureAPI.Data.Repositories
         }
 
         // Delets a user from the database
-        public async Task DeleteUserAsync(int userId)
+        public async Task DeleteUserAsync(string userId)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user != null) 
@@ -46,10 +46,15 @@ namespace EventureAPI.Data.Repositories
         }
 
         // Finds a user by id
-        public async Task<User> GetUserByIdAsync(int userId)
+        public async Task<User> GetUserByIdAsync(string userId)
         {
             var user = await _context.Users.FindAsync(userId);
             return user;
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }
