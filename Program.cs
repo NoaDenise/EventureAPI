@@ -1,6 +1,10 @@
 
 using EventureAPI.Data;
+using EventureAPI.Data.Repositories.IRepositories;
+using EventureAPI.Data.Repositories;
 using EventureAPI.Models;
+using EventureAPI.Services.IServices;
+using EventureAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +51,10 @@ namespace EventureAPI
             builder.Services.AddIdentityCore<User>()
                 .AddEntityFrameworkStores<EventureContext>()
                 .AddApiEndpoints();
+
+            // Lägger till repository och service för rating
+            builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+            builder.Services.AddScoped<IRatingService, RatingService>();
 
             var app = builder.Build();
 
