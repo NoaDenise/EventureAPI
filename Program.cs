@@ -51,6 +51,9 @@ namespace EventureAPI
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
 
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
+
             builder.Services.AddAuthorization();
             builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<EventureContext>()
