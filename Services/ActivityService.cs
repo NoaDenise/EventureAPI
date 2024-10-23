@@ -76,9 +76,31 @@ namespace EventureAPI.Services
             return await _activityRepository.GetActivityByIdAsync(activityId);
         }
 
-        public Task<IEnumerable<ActivityShowDTO>> GetAll18PlusActivitiesAsync(bool is18Plus)
+        public async Task<IEnumerable<ActivityShowDTO>> GetAll18PlusActivitiesAsync(bool is18Plus)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var activities = await _activityRepository.GetAll18PlusActivitiesAsync(is18Plus);
+
+                // Map to DTO (Assuming you have a mapping function)
+                return activities.Select(a => new ActivityShowDTO
+                {
+                    // Map properties from Activity to ActivityShowDTO
+
+                    ActivityName = a.ActivityName,
+                    ActivityDescription = a.ActivityDescription,
+                    DateOfActivity = a.DateOfActivity,
+                    ActivityLocation = a.ActivityLocation,
+                    ImageUrl = a.ImageUrl,
+                    WebsiteUrl = a.WebsiteUrl,
+                    ContactInfo = a.ContactInfo
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving activities for 18+. " + ex.Message);
+            }
+
         }
 
         public Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesAsync()
@@ -86,9 +108,31 @@ namespace EventureAPI.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved)
+        public async Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var activities = await _activityRepository.GetAllActivitiesAwaitingApprovalAsync(isApproved);                return activities.Select(a => new ActivityShowAdminDTO
+                {
+                    ActivityId = a.ActivityId,
+                    UserId = a.UserId,
+                    ActivityName = a.ActivityName,
+                    ActivityDescription = a.ActivityDescription,
+                    DateOfActivity = a.DateOfActivity,
+                    ActivityLocation = a.ActivityLocation,
+                    ImageUrl = a.ImageUrl,
+                    WebsiteUrl = a.WebsiteUrl,
+                    ContactInfo = a.ContactInfo,
+                    IsApproved = a.IsApproved,
+                    IsFree = a.IsFree,
+                    Is18Plus = a.Is18Plus
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving activities awaiting approval. " + ex.Message);
+            }
+
         }
 
         public Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesByCategoryAsync(int categoryId)
@@ -106,14 +150,49 @@ namespace EventureAPI.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ActivityShowDTO>> GetAllFamilyFriendlyActivitiesAsync(bool isFamilyFriendly)
+        public async Task<IEnumerable<ActivityShowDTO>> GetAllFamilyFriendlyActivitiesAsync(bool isFamilyFriendly)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var activities = await _activityRepository.GetAllFamilyFriendlyActivitiesAsync(isFamilyFriendly);
+                return activities.Select(a => new ActivityShowDTO
+                {
+                    ActivityName = a.ActivityName,
+                    ActivityDescription = a.ActivityDescription,
+                    DateOfActivity = a.DateOfActivity,
+                    ActivityLocation = a.ActivityLocation,
+                    ImageUrl = a.ImageUrl,
+                    WebsiteUrl = a.WebsiteUrl,
+                    ContactInfo = a.ContactInfo
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving family-friendly activities. " + ex.Message);
+            }
         }
 
-        public Task<IEnumerable<ActivityShowDTO>> GetAllFreeActivitiesAsync(bool isFree)
+        public async Task<IEnumerable<ActivityShowDTO>> GetAllFreeActivitiesAsync(bool isFree)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var activities = await _activityRepository.GetAllFreeActivitiesAsync(isFree);
+                return activities.Select(a => new ActivityShowDTO
+                {
+                    ActivityName = a.ActivityName,
+                    ActivityDescription = a.ActivityDescription,
+                    DateOfActivity = a.DateOfActivity,
+                    ActivityLocation = a.ActivityLocation,
+                    ImageUrl = a.ImageUrl,
+                    WebsiteUrl = a.WebsiteUrl,
+                    ContactInfo = a.ContactInfo
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving free activities. " + ex.Message);
+            }
+
         }
 
         Task IActivityService.DeleteActivity(int activityId)
