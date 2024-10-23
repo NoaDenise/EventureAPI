@@ -1,17 +1,18 @@
 ﻿using EventureAPI.Data.Repositories.IRepositories;
-using System.Diagnostics;
+using EventureAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventureAPI.Data.Repositories
 {
     public class ActivityRepository : IActivityRepository
     {
-
         private readonly EventureContext _context;
 
         public ActivityRepository(EventureContext context)
         {
             _context = context;
         }
+
         public Task AddActivityAsync(Activity activity)
         {
             throw new NotImplementedException();
@@ -27,9 +28,9 @@ namespace EventureAPI.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Activity> GetActivityByIdAsync(int activityId)
+        public async Task<Activity> GetActivityByIdAsync(int activityId)
         {
-            throw new NotImplementedException();
+            return await _context.Activities.SingleOrDefaultAsync(a => a.ActivityId == activityId);
         }
 
         public Task<IEnumerable<Activity>> GetAll18PlusActivitiesAsync(bool is18Plus)
@@ -47,19 +48,31 @@ namespace EventureAPI.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Activity>> GetAllActivitiesByCategoryAsync(int categoryId)
+        public async Task<IEnumerable<Activity>> GetAllActivitiesByCategoryAsync(int categoryId)
         {
-            throw new NotImplementedException();
+            //include tables to find categoryId
+            return await _context.Activities
+                .Include(a => a.ActivityCategories)
+                .ThenInclude(ac => ac.Category)
+                .Where(a => a.ActivityCategories.Any(ac => ac.CategoryId == categoryId))
+                .ToListAsync();
         }
 
-        public Task<IEnumerable<Activity>> GetAllActivitiesByLocationAsync(string location)
+        public async Task<IEnumerable<Activity>> GetAllActivitiesByLocationAsync(string location)
         {
-            throw new NotImplementedException();
+            return await _context.Activities.Where(a => a.ActivityLocation == location).ToListAsync();
         }
 
-        public Task<IEnumerable<Activity>> GetAllActivitiesByUsersPreferencesAsync(int userCategoryId)
+        public async Task<IEnumerable<Activity>> GetAllActivitiesByUsersPreferencesAsync(int userCategoryId)
         {
-            throw new NotImplementedException();
+            //finding a user's preferences by filtering among userCategories
+            return await _context.Activities
+                .Include(a => a.ActivityCategories)
+                .ThenInclude(a => a.Category)
+                .Where(a => a.ActivityCategories
+                .Any(a => a.Category.UserCategories
+                .Any(a => a.UserCategoryId == userCategoryId)))
+                .ToListAsync();
         }
 
         public Task<IEnumerable<Activity>> GetAllFamilyFriendlyActivitiesAsync(bool isFamilyFriendly)

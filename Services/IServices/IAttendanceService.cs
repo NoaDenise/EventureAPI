@@ -1,4 +1,5 @@
-﻿using EventureAPI.Models.DTOs;
+﻿using EventureAPI.Models;
+using EventureAPI.Models.DTOs;
 
 namespace EventureAPI.Services.IServices
 {
@@ -9,5 +10,6 @@ namespace EventureAPI.Services.IServices
         Task EditAttendanceAsync(int attendanceId, AttendanceCreateEditDTO attendanceDto);
         Task DeleteAttendanceAsync(int attendanceId);
         Task<AttendanceShowDTO> GetAttendanceByIdAsync(int attendanceId);
+        Task<IEnumerable<AttendanceShowDTO>> GetAttendanceByActivityAsync(int activityId);
     }
 }
