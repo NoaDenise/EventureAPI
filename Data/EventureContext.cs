@@ -9,7 +9,7 @@ namespace EventureAPI.Data
     {
         public EventureContext(DbContextOptions<EventureContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
+        public override DbSet<User> Users { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Comment> Comments { get; set; }

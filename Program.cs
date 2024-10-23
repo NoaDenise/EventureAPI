@@ -1,10 +1,10 @@
 
 using EventureAPI.Data;
-using EventureAPI.Data.Repositories.IRepositories;
 using EventureAPI.Data.Repositories;
+using EventureAPI.Data.Repositories.IRepositories;
 using EventureAPI.Models;
-using EventureAPI.Services.IServices;
 using EventureAPI.Services;
+using EventureAPI.Services.IServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -48,10 +48,25 @@ namespace EventureAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            //Adding scope for repo and services
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUserService, UserService>();
+
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
+
             builder.Services.AddAuthorization();
-            builder.Services.AddIdentityCore<User>()
+            builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<EventureContext>()
-                .AddApiEndpoints();
+                .AddDefaultTokenProviders();
+
+            // L�gger till repository och service f�r rating
+            builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+            builder.Services.AddScoped<IRatingService, RatingService>();
+
+            builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
+            builder.Services.AddScoped<IActivityService, ActivityService>();
+
 
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -70,7 +85,7 @@ namespace EventureAPI
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapIdentityApi<User>();
+            //app.MapIdentityApi<User>();
 
             app.MapControllers();
 

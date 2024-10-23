@@ -1,7 +1,6 @@
-﻿using EventureAPI.Data.Repositories;
-using EventureAPI.Data.Repositories.IRepositories;
+﻿using EventureAPI.Data.Repositories.IRepositories;
+using EventureAPI.Models.DTOs;
 using EventureAPI.Services.IServices;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventureAPI.Controllers
@@ -20,6 +19,7 @@ namespace EventureAPI.Controllers
             _categoryService = categoryService;
             _userService = userService;
         }
+
         // GET: api/activity/18plus
         [HttpGet("18plus")]
         public async Task<IActionResult> GetAll18PlusActivities([FromQuery] bool is18Plus)
@@ -79,6 +79,43 @@ namespace EventureAPI.Controllers
             }
         }
 
+
+
+        [HttpPost("addActivity")]
+        public async Task<ActionResult> AddActivity(ActivityCreateEditDTO activityDto)
+        {
+            await _activityService.AddActivityAsync(activityDto);
+            return Ok("Aktiviteten lades till.");
+        }
+
+        [HttpDelete("deleteActivity/{activityId}")]
+        public ActionResult DeleteActivity(int activityId)
+        {
+            // Eftersom DeleteActivity inte ska vara async (kontrollera detta)
+            _activityService.DeleteActivity(activityId);
+            return Ok($"Aktiviteten med id:{activityId} har raderats.");
+        }
+
+        [HttpPut("editActivity/{activityId}")]
+        public async Task<ActionResult> EditActivity(int activityId, ActivityCreateEditDTO activityDto)
+        {
+            await _activityService.EditActivityAsync(activityId, activityDto);
+            return Ok("Aktiviteten har uppdaterats.");
+        }
+
+        [HttpGet("getAllActivities")]
+        public async Task<ActionResult> GetAllActivities()
+        {
+            var activities = await _activityService.GetAllActivitiesAsync();
+            return Ok(activities);
+        }
+
+        [HttpGet("getActivityById/{activityId}")]
+        public async Task<ActionResult> GetActivityById(int activityId)
+        {
+            var activity = await _activityService.GetActivityByIdAsync(activityId);
+            return Ok(activity);
+        }
 
     }
 }

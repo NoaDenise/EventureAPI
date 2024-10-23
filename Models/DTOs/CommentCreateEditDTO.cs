@@ -9,9 +9,9 @@ namespace EventureAPI.Models.DTOs
         public DateTime CreatedAt { get; set; }
 
         //[Required]
-        //public string UserId { get; set; }
+        public string UserId { get; set; }
 
         //[Required]
-        //public int ActivityId { get; set; }
+        public int ActivityId { get; set; }
     }
 }
