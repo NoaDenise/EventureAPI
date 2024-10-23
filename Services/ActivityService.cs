@@ -13,9 +13,21 @@ namespace EventureAPI.Services
             _activityRepository = activityRepository;
         }
 
-        public Task AddActivityAsync(ActivityCreateEditDTO activityDto)
+        public async Task AddActivityAsync(ActivityCreateEditDTO activityDto)
         {
-            throw new NotImplementedException();
+            var newActivity = new Activity
+            {
+                UserId = activityDto.UserId,
+                ActivityName = activityDto.ActivityName,
+                ActivityDescription = activityDto.ActivityDescription,
+                DateOfActivity = activityDto.DateOfActivity,
+                ActivityLocation = activityDto.ActivityLocation,
+                ImageUrl = activityDto.ImageUrl,
+                WebsiteUrl = activityDto.WebsiteUrl,
+                ContactInfo = activityDto.ContactInfo
+            };
+
+            await _activityRepository.AddActivityAsync(newActivity);
         }
 
         public Task AddActivityAsync(Activity activity)
@@ -23,9 +35,13 @@ namespace EventureAPI.Services
             throw new NotImplementedException();
         }
 
-        public Task DeleteActivity(int activityId)
+        public void DeleteActivity(int activityId)
         {
-            throw new NotImplementedException();
+            // Hämta aktiviteten och ta bort den
+            var activity = _activityRepository.GetActivityByIdAsync(activityId).Result;
+            if (activity == null) throw new KeyNotFoundException("Activity not found.");
+
+            _activityRepository.DeleteActivity(activity);
         }
 
         public Task DeleteActivity(Activity activity)
@@ -33,9 +49,21 @@ namespace EventureAPI.Services
             throw new NotImplementedException();
         }
 
-        public Task EditActivityAsync(int activityId, ActivityCreateEditDTO activityDto)
+        public async Task EditActivityAsync(int activityId, ActivityCreateEditDTO activityDto)
         {
-            throw new NotImplementedException();
+            var activity = await _activityRepository.GetActivityByIdAsync(activityId);
+            if (activity == null) throw new KeyNotFoundException("Activity not found.");
+
+            // Uppdatera fälten
+            activity.ActivityName = activityDto.ActivityName;
+            activity.ActivityDescription = activityDto.ActivityDescription;
+            activity.DateOfActivity = activityDto.DateOfActivity;
+            activity.ActivityLocation = activityDto.ActivityLocation;
+            activity.ImageUrl = activityDto.ImageUrl;
+            activity.WebsiteUrl = activityDto.WebsiteUrl;
+            activity.ContactInfo = activityDto.ContactInfo;
+
+            await _activityRepository.EditActivityAsync(activity);
         }
 
         public Task EditActivityAsync(Activity activity)
@@ -43,9 +71,9 @@ namespace EventureAPI.Services
             throw new NotImplementedException();
         }
 
-        public Task<Activity> GetActivityByIdAsync(int activityId)
+        public async Task<Activity> GetActivityByIdAsync(int activityId)
         {
-            throw new NotImplementedException();
+            return await _activityRepository.GetActivityByIdAsync(activityId);
         }
 
         public Task<IEnumerable<ActivityShowDTO>> GetAll18PlusActivitiesAsync(bool is18Plus)
@@ -84,6 +112,11 @@ namespace EventureAPI.Services
         }
 
         public Task<IEnumerable<ActivityShowDTO>> GetAllFreeActivitiesAsync(bool isFree)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task IActivityService.DeleteActivity(int activityId)
         {
             throw new NotImplementedException();
         }

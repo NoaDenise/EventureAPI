@@ -63,6 +63,10 @@ namespace EventureAPI
             builder.Services.AddScoped<IRatingRepository, RatingRepository>();
             builder.Services.AddScoped<IRatingService, RatingService>();
 
+            builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
+            builder.Services.AddScoped<IActivityService, ActivityService>();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
