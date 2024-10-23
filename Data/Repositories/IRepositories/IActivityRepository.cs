@@ -7,7 +7,7 @@ namespace EventureAPI.Data.Repositories.IRepositories
     {
         Task<IEnumerable<Activity>> GetAllActivitiesAsync();
         Task AddActivityAsync(Activity activity);
-        Task DeleteActivity(Activity activity);
+        Task DeleteActivityAsync(Activity activity);
         Task EditActivityAsync(Activity activity);
         Task<Activity> GetActivityByIdAsync(int activityId);
         Task<IEnumerable<Activity>> GetAllActivitiesByCategoryAsync(int categoryId);

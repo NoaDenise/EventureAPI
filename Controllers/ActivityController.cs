@@ -169,10 +169,10 @@ namespace EventureAPI.Controllers
         }
 
         [HttpDelete("deleteActivity/{activityId}")]
-        public ActionResult DeleteActivity(int activityId)
+        public async Task<ActionResult> DeleteActivity(int activityId)
         {
             // Eftersom DeleteActivity inte ska vara async (kontrollera detta)
-            _activityService.DeleteActivity(activityId);
+            await _activityService.DeleteActivityAsync(activityId);
             return Ok($"Aktiviteten med id:{activityId} har raderats.");
         }
 
@@ -189,13 +189,5 @@ namespace EventureAPI.Controllers
             var activities = await _activityService.GetAllActivitiesAsync();
             return Ok(activities);
         }
-
-        [HttpGet("getActivityById/{activityId}")]
-        public async Task<ActionResult> GetActivityById(int activityId)
-        {
-            var activity = await _activityService.GetActivityByIdAsync(activityId);
-            return Ok(activity);
-        }
-
     }
 }

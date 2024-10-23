@@ -14,6 +14,21 @@ namespace EventureAPI.Services
             _activityRepository = activityRepository;
         }
 
+        public async Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesAsync()
+        {
+            var allActivities = await _activityRepository.GetAllActivitiesAsync();
+
+            return allActivities.Select(a => new ActivityShowDTO
+            {
+                ActivityName = a.ActivityName,
+                ActivityDescription = a.ActivityDescription,
+                DateOfActivity = a.DateOfActivity,
+                ImageUrl = a.ImageUrl,
+                WebsiteUrl = a.WebsiteUrl,
+                ContactInfo = a.ContactInfo
+            }).ToList();
+        }
+
         public async Task AddActivityAsync(ActivityCreateEditDTO activityDto)
         {
             var newActivity = new Activity
@@ -31,13 +46,13 @@ namespace EventureAPI.Services
             await _activityRepository.AddActivityAsync(newActivity);
         }
 
-        public void DeleteActivity(int activityId)
+        public async Task DeleteActivityAsync(int activityId)
         {
             // Hämta aktiviteten och ta bort den
             var activity = _activityRepository.GetActivityByIdAsync(activityId).Result;
             if (activity == null) throw new KeyNotFoundException("Activity not found.");
 
-            _activityRepository.DeleteActivity(activity);
+            await _activityRepository.DeleteActivityAsync(activity);
         }
 
 
@@ -97,7 +112,6 @@ namespace EventureAPI.Services
 
         }
 
-
         public async Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved)
         {
             try
@@ -122,7 +136,6 @@ namespace EventureAPI.Services
             {
                 throw new Exception("An error occurred while retrieving activities awaiting approval. " + ex.Message);
             }
-
         }
 
         public async Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesByCategoryAsync(int categoryId)
@@ -216,11 +229,6 @@ namespace EventureAPI.Services
                 throw new Exception("An error occurred while retrieving free activities. " + ex.Message);
             }
 
-        }
-
-        Task IActivityService.DeleteActivity(int activityId)
-        {
-            throw new NotImplementedException();
         }
     }
 }
