@@ -1,4 +1,3 @@
-
 using EventureAPI.Data;
 using EventureAPI.Data.Repositories;
 using EventureAPI.Data.Repositories.IRepositories;
@@ -54,6 +53,12 @@ namespace EventureAPI
 
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddScoped<ICommentService, CommentService>();
+
+            builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+            builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+
+            builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
+            builder.Services.AddScoped<IActivityService, ActivityService>();
 
             builder.Services.AddAuthorization();
             builder.Services.AddIdentity<User, IdentityRole>()

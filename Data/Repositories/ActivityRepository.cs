@@ -14,6 +14,7 @@ namespace EventureAPI.Data.Repositories
             _context = context;
         }
 
+
         // 1. Lägg till en ny aktivitet
         public async Task AddActivityAsync(Activity activity)
         {
@@ -50,10 +51,38 @@ namespace EventureAPI.Data.Repositories
             {
                 return Enumerable.Empty<Activity>(); // Returns an empty list if not 18+
             }
-
-            return await _context.Activities
+                        return await _context.Activities
                 .Where(a => a.Is18Plus) // Filter for 18+ activities
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Activity>> GetAllActivitiesByCategoryAsync(int categoryId)
+        {
+            //include tables to find categoryId
+            return await _context.Activities
+                .Include(a => a.ActivityCategories)
+                .ThenInclude(ac => ac.Category)
+                .Where(a => a.ActivityCategories.Any(ac => ac.CategoryId == categoryId))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Activity>> GetAllActivitiesByLocationAsync(string location)
+        {
+            return await _context.Activities.Where(a => a.ActivityLocation == location).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Activity>> GetAllActivitiesByUsersPreferencesAsync(int userCategoryId)
+        {
+            //finding a user's preferences by filtering among userCategories
+            return await _context.Activities
+                .Include(a => a.ActivityCategories)
+                .ThenInclude(a => a.Category)
+                .Where(a => a.ActivityCategories
+                .Any(a => a.Category.UserCategories
+                .Any(a => a.UserCategoryId == userCategoryId)))
+                .ToListAsync();
+        }
+
 
 
         public async Task<IEnumerable<Activity>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved)

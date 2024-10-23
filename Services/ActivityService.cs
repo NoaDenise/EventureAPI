@@ -8,6 +8,7 @@ namespace EventureAPI.Services
     public class ActivityService : IActivityService
     {
         private readonly IActivityRepository _activityRepository;
+
         public ActivityService(IActivityRepository activityRepository)
         {
             _activityRepository = activityRepository;
@@ -30,11 +31,6 @@ namespace EventureAPI.Services
             await _activityRepository.AddActivityAsync(newActivity);
         }
 
-        public Task AddActivityAsync(Activity activity)
-        {
-            throw new NotImplementedException();
-        }
-
         public void DeleteActivity(int activityId)
         {
             // Hämta aktiviteten och ta bort den
@@ -44,10 +40,6 @@ namespace EventureAPI.Services
             _activityRepository.DeleteActivity(activity);
         }
 
-        public Task DeleteActivity(Activity activity)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task EditActivityAsync(int activityId, ActivityCreateEditDTO activityDto)
         {
@@ -66,16 +58,18 @@ namespace EventureAPI.Services
             await _activityRepository.EditActivityAsync(activity);
         }
 
-        public Task EditActivityAsync(Activity activity)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<Activity> GetActivityByIdAsync(int activityId)
         {
-            return await _activityRepository.GetActivityByIdAsync(activityId);
-        }
+            var chosenActivity = await _activityRepository.GetActivityByIdAsync(activityId);
 
+            if (chosenActivity == null)
+            {
+                throw new Exception($"Activity with ID {activityId} not found.");
+            }
+            return chosenActivity;
+
+        }
+        
         public async Task<IEnumerable<ActivityShowDTO>> GetAll18PlusActivitiesAsync(bool is18Plus)
         {
             try
@@ -103,10 +97,6 @@ namespace EventureAPI.Services
 
         }
 
-        public Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesAsync()
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved)
         {
@@ -135,19 +125,52 @@ namespace EventureAPI.Services
 
         }
 
-        public Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesByCategoryAsync(int categoryId)
+        public async Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesByCategoryAsync(int categoryId)
         {
-            throw new NotImplementedException();
+            var activities = await _activityRepository.GetAllActivitiesByCategoryAsync(categoryId);
+
+            return activities.Select(a => new ActivityShowDTO
+            {
+                ActivityName = a.ActivityName,
+                ActivityDescription = a.ActivityDescription,
+                DateOfActivity = a.DateOfActivity,
+                ActivityLocation = a.ActivityLocation,
+                ImageUrl = a.ImageUrl,
+                WebsiteUrl = a.WebsiteUrl,
+                ContactInfo = a.ContactInfo
+            }).ToList();
         }
 
-        public Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesByLocationAsync(string location)
+        public async Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesByLocationAsync(string location)
         {
-            throw new NotImplementedException();
+            var activities = await _activityRepository.GetAllActivitiesByLocationAsync(location);
+
+            return activities.Select(a => new ActivityShowDTO
+            {
+                ActivityName = a.ActivityName,
+                ActivityDescription = a.ActivityDescription,
+                DateOfActivity = a.DateOfActivity,
+                ActivityLocation = a.ActivityLocation,
+                ImageUrl = a.ImageUrl,
+                WebsiteUrl = a.WebsiteUrl,
+                ContactInfo = a.ContactInfo
+            }).ToList();
         }
 
-        public Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesByUsersPreferencesAsync(int userCategoryId)
+        public async Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesByUsersPreferencesAsync(int userCategoryId)
         {
-            throw new NotImplementedException();
+            var activities = await _activityRepository.GetAllActivitiesByCategoryAsync(userCategoryId);
+
+            return activities.Select(a => new ActivityShowDTO
+            {
+                ActivityName = a.ActivityName,
+                ActivityDescription = a.ActivityDescription,
+                DateOfActivity = a.DateOfActivity,
+                ActivityLocation = a.ActivityLocation,
+                ImageUrl = a.ImageUrl,
+                WebsiteUrl = a.WebsiteUrl,
+                ContactInfo = a.ContactInfo
+            }).ToList();
         }
 
         public async Task<IEnumerable<ActivityShowDTO>> GetAllFamilyFriendlyActivitiesAsync(bool isFamilyFriendly)
