@@ -43,6 +43,7 @@ namespace EventureAPI
                     };
                 });
 
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -63,6 +64,17 @@ namespace EventureAPI
             builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<EventureContext>()
                 .AddDefaultTokenProviders();
+
+            // L�gger till repository och service f�r rating
+            builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+            builder.Services.AddScoped<IRatingService, RatingService>();
+
+            builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
+            builder.Services.AddScoped<IActivityService, ActivityService>();
+
+
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             var app = builder.Build();
 

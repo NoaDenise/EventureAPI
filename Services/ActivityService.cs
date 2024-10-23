@@ -9,54 +9,53 @@ namespace EventureAPI.Services
     {
         private readonly IActivityRepository _activityRepository;
 
-        private readonly List<Activity> _activities = new List<Activity>
-    {
-        new Activity
-        {
-            ActivityId = 1,
-            UserId = "exampleUserId",
-            ActivityName = "Hiking Adventure",
-            ActivityDescription = "Join us for a fun hiking adventure in the mountains!",
-            DateOfActivity = DateTime.Now.AddDays(10),
-            ActivityLocation = "Mountain Trail",
-            IsApproved = true,
-            IsFree = false,
-            Is18Plus = false,
-            IsFamilyFriendly = true
-        },
-        new Activity
-        {
-            ActivityId = 2,
-            UserId = "exampleUserId",
-            ActivityName = "Cooking Class",
-            ActivityDescription = "Learn to cook delicious meals.",
-            DateOfActivity = DateTime.Now.AddDays(5),
-            ActivityLocation = "Culinary School",
-            IsApproved = true,
-            IsFree = true,
-            Is18Plus = false,
-            IsFamilyFriendly = true
-        }
-    };
-
         public ActivityService(IActivityRepository activityRepository)
         {
             _activityRepository = activityRepository;
         }
 
-        public Task AddActivityAsync(ActivityCreateEditDTO activityDto)
+        public async Task AddActivityAsync(ActivityCreateEditDTO activityDto)
         {
-            throw new NotImplementedException();
+            var newActivity = new Activity
+            {
+                UserId = activityDto.UserId,
+                ActivityName = activityDto.ActivityName,
+                ActivityDescription = activityDto.ActivityDescription,
+                DateOfActivity = activityDto.DateOfActivity,
+                ActivityLocation = activityDto.ActivityLocation,
+                ImageUrl = activityDto.ImageUrl,
+                WebsiteUrl = activityDto.WebsiteUrl,
+                ContactInfo = activityDto.ContactInfo
+            };
+
+            await _activityRepository.AddActivityAsync(newActivity);
         }
 
-        public Task DeleteActivity(int activityId)
+        public void DeleteActivity(int activityId)
         {
-            throw new NotImplementedException();
+            // Hämta aktiviteten och ta bort den
+            var activity = _activityRepository.GetActivityByIdAsync(activityId).Result;
+            if (activity == null) throw new KeyNotFoundException("Activity not found.");
+
+            _activityRepository.DeleteActivity(activity);
         }
 
-        public Task EditActivityAsync(int activityId, ActivityCreateEditDTO activityDto)
+
+        public async Task EditActivityAsync(int activityId, ActivityCreateEditDTO activityDto)
         {
-            throw new NotImplementedException();
+            var activity = await _activityRepository.GetActivityByIdAsync(activityId);
+            if (activity == null) throw new KeyNotFoundException("Activity not found.");
+
+            // Uppdatera fälten
+            activity.ActivityName = activityDto.ActivityName;
+            activity.ActivityDescription = activityDto.ActivityDescription;
+            activity.DateOfActivity = activityDto.DateOfActivity;
+            activity.ActivityLocation = activityDto.ActivityLocation;
+            activity.ImageUrl = activityDto.ImageUrl;
+            activity.WebsiteUrl = activityDto.WebsiteUrl;
+            activity.ContactInfo = activityDto.ContactInfo;
+
+            await _activityRepository.EditActivityAsync(activity);
         }
 
         public async Task<Activity> GetActivityByIdAsync(int activityId)
@@ -68,21 +67,62 @@ namespace EventureAPI.Services
                 throw new Exception($"Activity with ID {activityId} not found.");
             }
             return chosenActivity;
+
+        }
+        
+        public async Task<IEnumerable<ActivityShowDTO>> GetAll18PlusActivitiesAsync(bool is18Plus)
+        {
+            try
+            {
+                var activities = await _activityRepository.GetAll18PlusActivitiesAsync(is18Plus);
+
+                // Map to DTO (Assuming you have a mapping function)
+                return activities.Select(a => new ActivityShowDTO
+                {
+                    // Map properties from Activity to ActivityShowDTO
+
+                    ActivityName = a.ActivityName,
+                    ActivityDescription = a.ActivityDescription,
+                    DateOfActivity = a.DateOfActivity,
+                    ActivityLocation = a.ActivityLocation,
+                    ImageUrl = a.ImageUrl,
+                    WebsiteUrl = a.WebsiteUrl,
+                    ContactInfo = a.ContactInfo
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving activities for 18+. " + ex.Message);
+            }
+
         }
 
-        public Task<IEnumerable<ActivityShowDTO>> GetAll18PlusActivitiesAsync(bool is18Plus)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesAsync()
+        public async Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                var activities = await _activityRepository.GetAllActivitiesAwaitingApprovalAsync(isApproved);                return activities.Select(a => new ActivityShowAdminDTO
+                {
+                    ActivityId = a.ActivityId,
+                    UserId = a.UserId,
+                    ActivityName = a.ActivityName,
+                    ActivityDescription = a.ActivityDescription,
+                    DateOfActivity = a.DateOfActivity,
+                    ActivityLocation = a.ActivityLocation,
+                    ImageUrl = a.ImageUrl,
+                    WebsiteUrl = a.WebsiteUrl,
+                    ContactInfo = a.ContactInfo,
+                    IsApproved = a.IsApproved,
+                    IsFree = a.IsFree,
+                    Is18Plus = a.Is18Plus
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving activities awaiting approval. " + ex.Message);
+            }
 
-        public Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesByCategoryAsync(int categoryId)
@@ -133,12 +173,52 @@ namespace EventureAPI.Services
             }).ToList();
         }
 
-        public Task<IEnumerable<ActivityShowDTO>> GetAllFamilyFriendlyActivitiesAsync(bool isFamilyFriendly)
+        public async Task<IEnumerable<ActivityShowDTO>> GetAllFamilyFriendlyActivitiesAsync(bool isFamilyFriendly)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var activities = await _activityRepository.GetAllFamilyFriendlyActivitiesAsync(isFamilyFriendly);
+                return activities.Select(a => new ActivityShowDTO
+                {
+                    ActivityName = a.ActivityName,
+                    ActivityDescription = a.ActivityDescription,
+                    DateOfActivity = a.DateOfActivity,
+                    ActivityLocation = a.ActivityLocation,
+                    ImageUrl = a.ImageUrl,
+                    WebsiteUrl = a.WebsiteUrl,
+                    ContactInfo = a.ContactInfo
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving family-friendly activities. " + ex.Message);
+            }
         }
 
-        public Task<IEnumerable<ActivityShowDTO>> GetAllFreeActivitiesAsync(bool isFree)
+        public async Task<IEnumerable<ActivityShowDTO>> GetAllFreeActivitiesAsync(bool isFree)
+        {
+            try
+            {
+                var activities = await _activityRepository.GetAllFreeActivitiesAsync(isFree);
+                return activities.Select(a => new ActivityShowDTO
+                {
+                    ActivityName = a.ActivityName,
+                    ActivityDescription = a.ActivityDescription,
+                    DateOfActivity = a.DateOfActivity,
+                    ActivityLocation = a.ActivityLocation,
+                    ImageUrl = a.ImageUrl,
+                    WebsiteUrl = a.WebsiteUrl,
+                    ContactInfo = a.ContactInfo
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving free activities. " + ex.Message);
+            }
+
+        }
+
+        Task IActivityService.DeleteActivity(int activityId)
         {
             throw new NotImplementedException();
         }
