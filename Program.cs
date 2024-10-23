@@ -59,6 +59,10 @@ namespace EventureAPI
                 .AddEntityFrameworkStores<EventureContext>()
                 .AddDefaultTokenProviders();
 
+            // L�gger till repository och service f�r rating
+            builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+            builder.Services.AddScoped<IRatingService, RatingService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
