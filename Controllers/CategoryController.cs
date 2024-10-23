@@ -20,7 +20,7 @@ namespace EventureAPI.Controllers
 
         // GET: api/Category
         // Retrieves all categories
-        [HttpGet]
+        [HttpGet("getAllCategories")]
         public async Task<ActionResult<IEnumerable<CategoryShowDTO>>> GetAllCategories()
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
@@ -29,7 +29,7 @@ namespace EventureAPI.Controllers
 
         // GET: api/Category/{id}
         // Retrieves a specific category by ID
-        [HttpGet("{id}")]
+        [HttpGet("getCategoryById/{id}")]
        /* [Authorize]*/ // Requires authorization to access this endpoint
         public async Task<ActionResult<CategoryShowDTO>> GetCategoryById(int id)
         {
@@ -46,7 +46,7 @@ namespace EventureAPI.Controllers
 
         // POST: api/Category
         // Adds a new category
-        [HttpPost]
+        [HttpPost("addCategory")]
         public async Task<ActionResult> AddCategory([FromBody] CategoryCreateEditDTO categoryCreateEditDTO)
         {
             if (!ModelState.IsValid) 
@@ -67,7 +67,7 @@ namespace EventureAPI.Controllers
 
         // PUT: api/Category/{id}
         // Edits an existing category by ID
-        [HttpPut("{id}")]
+        [HttpPut("editCategory/{id}")]
        /* [Authorize] */// Requires authorization to access this endpoint
         public async Task<ActionResult> EditCategory(int id, [FromBody] CategoryCreateEditDTO categoryCreateEditDTO)
         {
@@ -93,7 +93,7 @@ namespace EventureAPI.Controllers
 
         // DELETE: api/Category/{id}
         // Deletes a category by ID
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteCategory/{id}")]
        /* [Authorize] */// Requires authorization to access this endpoint
         public async Task<ActionResult> DeleteCategory(int id)
         {
