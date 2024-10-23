@@ -19,6 +19,7 @@ namespace EventureAPI.Services
         {
             var newRating = new Rating
             {
+                UserId = ratingDto.UserId,
                 ActivityId = ratingDto.ActivityId,
                 Score = ratingDto.Score,
             };

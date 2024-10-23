@@ -14,6 +14,11 @@ namespace EventureAPI.Data.Repositories
             _context = context;
         }
 
+        public async Task<IEnumerable<Activity>> GetAllActivitiesAsync() 
+        {
+            var allActivities = await _context.Activities.ToListAsync(); 
+            return allActivities;
+        }
 
         // 1. Lägg till en ny aktivitet
         public async Task AddActivityAsync(Activity activity)
@@ -23,10 +28,10 @@ namespace EventureAPI.Data.Repositories
         }
 
         // 2. Ta bort en aktivitet (ska denna va asynkron?)
-        public void DeleteActivity(Activity activity)
+        public async Task DeleteActivityAsync(Activity activity)
         {
             _context.Activities.Remove(activity);
-            _context.SaveChanges();  // Sparar förändringar synkront eftersom det inte är async
+            await _context.SaveChangesAsync();  // Sparar förändringar synkront eftersom det inte är async
         }
 
         // 3. Redigera en aktivitet
@@ -43,7 +48,6 @@ namespace EventureAPI.Data.Repositories
                 .FirstOrDefaultAsync(a => a.ActivityId == activityId);  // Hämtar aktivitet baserat på ID
         }
 
-
         public async Task<IEnumerable<Activity>> GetAll18PlusActivitiesAsync(bool is18Plus)
         {
             // If is18Plus is false, return an empty list
@@ -51,7 +55,8 @@ namespace EventureAPI.Data.Repositories
             {
                 return Enumerable.Empty<Activity>(); // Returns an empty list if not 18+
             }
-                        return await _context.Activities
+
+            return await _context.Activities
                 .Where(a => a.Is18Plus) // Filter for 18+ activities
                 .ToListAsync();
         }
@@ -83,11 +88,8 @@ namespace EventureAPI.Data.Repositories
                 .ToListAsync();
         }
 
-
-
         public async Task<IEnumerable<Activity>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved)
         {
-
             if (isApproved)
             {
                 return await _context.Activities
@@ -98,12 +100,10 @@ namespace EventureAPI.Data.Repositories
             return await _context.Activities
                 .Where(a => a.IsApproved) // Filter for approved activities
                 .ToListAsync();
-
         }
 
         public async Task<IEnumerable<Activity>> GetAllFreeActivitiesAsync(bool isFree)
         {
-
             // If isFree is false, return an empty list
             if (!isFree)
             {
@@ -113,10 +113,18 @@ namespace EventureAPI.Data.Repositories
             return await _context.Activities
                 .Where(a => a.IsFree) // Filter for free activities
                 .ToListAsync();
-
-
-           
         }
 
+        public async Task<IEnumerable<Activity>> GetAllFamilyFriendlyActivitiesAsync(bool isFamilyFriendly)
+        {
+            if (!isFamilyFriendly)
+            {
+                return null;
+            }
+
+            return await _context.Activities
+                .Where (a => a.IsFamilyFriendly)
+                .ToListAsync();
+        }
     }
 }
