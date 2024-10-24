@@ -60,5 +60,18 @@ namespace EventureAPI.Data.Repositories
                 .Include(r => r.Activity)
                 .FirstOrDefaultAsync(r => r.RatingId == ratingId);
         }
+
+        // Hämtar medelvärdet av ratings för en aktivitet
+        public async Task<double> GetAverageRatingForActivityAsync(int activityId)
+        {
+            var ratings = await _context.Ratings
+                .Where(r => r.ActivityId == activityId)
+                .ToListAsync();
+
+            if (ratings.Count == 0) return 0;
+
+            return ratings.Average(r => r.Score) ?? 0;
+        }
+
     }
 }

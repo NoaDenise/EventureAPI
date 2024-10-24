@@ -9,5 +9,6 @@ namespace EventureAPI.Services.IServices
         Task EditRatingAsync(int ratingId, RatingCreateEditDTO ratingDto);
         Task DeleteRatingAsync(int ratingId);
         Task<RatingShowDTO> GetRatingByIdAsync(int ratingId);
+        Task<double> GetAverageRatingForActivityAsync(int activityId);
     }
 }

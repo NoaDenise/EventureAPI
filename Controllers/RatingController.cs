@@ -1,4 +1,5 @@
 ﻿using EventureAPI.Models.DTOs;
+using EventureAPI.Services;
 using EventureAPI.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -55,5 +56,14 @@ namespace EventureAPI.Controllers
             var rating = await _ratingService.GetRatingByIdAsync(ratingId);
             return Ok(rating);
         }
+
+        // Hämtar medelvärdet av ratings för en aktivitet
+        [HttpGet("getAverageRatingForActivity/{activityId}")]
+        public async Task<ActionResult<double>> GetAverageRatingForActivity(int activityId)
+        {
+            var averageRating = await _ratingService.GetAverageRatingForActivityAsync(activityId);
+            return Ok(averageRating);
+        }
+
     }
 }
