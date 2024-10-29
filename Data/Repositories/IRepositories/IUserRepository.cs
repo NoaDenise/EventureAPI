@@ -10,5 +10,9 @@ namespace EventureAPI.Data.Repositories.IRepositories
         Task DeleteUserAsync(string userId);
         Task<User> GetUserByIdAsync(string userId);
         Task<User> GetUserByEmailAsync(string email);
+        Task AddCategoryToUserAsync(string userId, int categoryId);
+        Task<IEnumerable<Category>> GetUserPreferencesAsync(string userId);
+
+
     }
 }

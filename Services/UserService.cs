@@ -1,4 +1,5 @@
-﻿using EventureAPI.Data.Repositories.IRepositories;
+﻿using EventureAPI.Data.Repositories;
+using EventureAPI.Data.Repositories.IRepositories;
 using EventureAPI.Models;
 using EventureAPI.Models.DTOs;
 using EventureAPI.Services.IServices;
@@ -152,6 +153,14 @@ namespace EventureAPI.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+        public async Task AddCategoryToUserAsync(string userId, int categoryId)
+        {
+            await _userRepo.AddCategoryToUserAsync(userId, categoryId);
+        }
+        public async Task<IEnumerable<Category>> GetUserPreferencesAsync(string userId)
+        {
+            return await _userRepo.GetUserPreferencesAsync(userId);
         }
 
     }

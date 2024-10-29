@@ -56,5 +56,31 @@ namespace EventureAPI.Data.Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
+        public async Task AddCategoryToUserAsync(string userId, int categoryId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            var category = await _context.Categories.FindAsync(categoryId);
+
+            if (user == null || category == null)
+            {
+                throw new Exception("User or Category not found.");
+            }
+
+            var userCategory = new UserCategory
+            {
+                UserId = userId,
+                CategoryId = categoryId
+            };
+
+            _context.UserCategories.Add(userCategory);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<Category>> GetUserPreferencesAsync(string userId)
+        {
+            return await _context.UserCategories
+                .Where(uc => uc.UserId == userId)
+                .Select(uc => uc.Category)
+                .ToListAsync();
+        }
     }
 }
