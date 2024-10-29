@@ -1,4 +1,5 @@
-﻿using EventureAPI.Data.Repositories.IRepositories;
+﻿using EventureAPI.Data.Repositories;
+using EventureAPI.Data.Repositories.IRepositories;
 using EventureAPI.Models;
 using EventureAPI.Models.DTOs;
 using EventureAPI.Services.IServices;
@@ -61,5 +62,12 @@ namespace EventureAPI.Services
                 Score = rating.Score
             };
         }
+
+        // Hämtar medelvärdet av ratings för en aktivitet
+        public async Task<double> GetAverageRatingForActivityAsync(int activityId)
+        {
+            return await _ratingRepository.GetAverageRatingForActivityAsync(activityId);
+        }
+
     }
 }

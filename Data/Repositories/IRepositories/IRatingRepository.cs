@@ -9,5 +9,7 @@ namespace EventureAPI.Data.Repositories.IRepositories
         Task EditRatingAsync(Rating rating);
         Task DeleteRatingAsync(int ratingId);
         Task<Rating> GetRatingByIdAsync(int ratingId);
+        Task<double> GetAverageRatingForActivityAsync(int activityId);
+
     }
 }
