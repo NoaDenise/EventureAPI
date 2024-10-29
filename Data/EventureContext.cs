@@ -17,6 +17,7 @@ namespace EventureAPI.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<UserCategory> UserCategories { get; set; }
         public DbSet<ActivityCategory> ActivityCategories { get; set; }
+        public DbSet<UserEvent> UserEvents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
