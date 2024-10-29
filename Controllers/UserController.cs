@@ -68,5 +68,31 @@ namespace EventureAPI.Controllers
             await _userService.RegisterAsync(regUser.FirstName, regUser.LastName, regUser.UserLocation, regUser.UserName, regUser.Email, regUser.PhoneNumber, regUser.Password);
             return Ok();
         }
+
+        // POST: api/user/{userId}/categories/{categoryId}
+        [HttpPost("{userId}/categories/{categoryId}")]
+        public async Task<IActionResult> AddCategoryToUser(string userId, int categoryId)
+        {
+            try
+            {
+                await _userService.AddCategoryToUserAsync(userId, categoryId);
+                return Ok(new { message = "Category added to user's preferences successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        [HttpGet("{userId}/preferences")]
+        public async Task<IActionResult> GetUserPreferences(string userId)
+        {
+            var preferences = await _userService.GetUserPreferencesAsync(userId);
+            if (preferences == null || !preferences.Any())
+            {
+                return NotFound("No preferences found for this user.");
+            }
+
+            return Ok(preferences);
+        }
     }
 }
