@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventureAPI.Migrations
 {
     [DbContext(typeof(EventureContext))]
-    [Migration("20241014115349_Init3")]
-    partial class Init3
+    [Migration("20241029095112_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -326,6 +326,30 @@ namespace EventureAPI.Migrations
                     b.ToTable("UserCategories");
                 });
 
+            modelBuilder.Entity("EventureAPI.Models.UserEvent", b =>
+                {
+                    b.Property<int>("UserEventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserEventId"));
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserEventId");
+
+                    b.HasIndex("ActivityId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserEvents");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -565,6 +589,25 @@ namespace EventureAPI.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("EventureAPI.Models.UserEvent", b =>
+                {
+                    b.HasOne("EventureAPI.Models.Activity", "Activity")
+                        .WithMany("UserEvents")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EventureAPI.Models.User", "User")
+                        .WithMany("UserEvents")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -625,6 +668,8 @@ namespace EventureAPI.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Ratings");
+
+                    b.Navigation("UserEvents");
                 });
 
             modelBuilder.Entity("EventureAPI.Models.Category", b =>
@@ -645,6 +690,8 @@ namespace EventureAPI.Migrations
                     b.Navigation("Ratings");
 
                     b.Navigation("UserCategories");
+
+                    b.Navigation("UserEvents");
                 });
 #pragma warning restore 612, 618
         }

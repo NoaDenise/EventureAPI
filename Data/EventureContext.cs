@@ -82,6 +82,18 @@ namespace EventureAPI.Data
             .WithMany(e => e.Ratings)
             .HasForeignKey(r => r.ActivityId)
             .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserEvent>()
+            .HasOne(a => a.User)
+            .WithMany(u => u.UserEvents)
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserEvent>()
+            .HasOne(a => a.Activity)
+            .WithMany(u => u.UserEvents)
+            .HasForeignKey(a => a.ActivityId)
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

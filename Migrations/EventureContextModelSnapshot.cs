@@ -340,6 +340,8 @@ namespace EventureAPI.Migrations
 
                     b.HasKey("UserEventId");
 
+                    b.HasIndex("ActivityId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("UserEvents");
@@ -586,11 +588,21 @@ namespace EventureAPI.Migrations
 
             modelBuilder.Entity("EventureAPI.Models.UserEvent", b =>
                 {
-                    b.HasOne("EventureAPI.Models.User", null)
+                    b.HasOne("EventureAPI.Models.Activity", "Activity")
+                        .WithMany("UserEvents")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EventureAPI.Models.User", "User")
                         .WithMany("UserEvents")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Activity");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -653,6 +665,8 @@ namespace EventureAPI.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Ratings");
+
+                    b.Navigation("UserEvents");
                 });
 
             modelBuilder.Entity("EventureAPI.Models.Category", b =>

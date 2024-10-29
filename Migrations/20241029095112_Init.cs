@@ -89,6 +89,36 @@ namespace EventureAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Activities",
+                columns: table => new
+                {
+                    ActivityId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ActivityName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ActivityDescription = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: false),
+                    DateOfActivity = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ActivityLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    WebsiteUrl = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    ContactInfo = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
+                    IsFree = table.Column<bool>(type: "bit", nullable: false),
+                    Is18Plus = table.Column<bool>(type: "bit", nullable: false),
+                    IsFamilyFriendly = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Activities", x => x.ActivityId);
+                    table.ForeignKey(
+                        name: "FK_Activities_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
@@ -174,35 +204,6 @@ namespace EventureAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Events",
-                columns: table => new
-                {
-                    EventId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EventName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    EventDescription = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: false),
-                    DateOfEvent = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    EventLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    WebsiteUrl = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    ContactInfo = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    IsFree = table.Column<bool>(type: "bit", nullable: false),
-                    Is18Plus = table.Column<bool>(type: "bit", nullable: false),
-                    IsFamilyFriendly = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Events", x => x.EventId);
-                    table.ForeignKey(
-                        name: "FK_Events_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserCategories",
                 columns: table => new
                 {
@@ -229,29 +230,55 @@ namespace EventureAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ActivityCategories",
+                columns: table => new
+                {
+                    ActivityCategoryId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ActivityId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ActivityCategories", x => x.ActivityCategoryId);
+                    table.ForeignKey(
+                        name: "FK_ActivityCategories_Activities_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activities",
+                        principalColumn: "ActivityId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ActivityCategories_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Attendances",
                 columns: table => new
                 {
                     AttendanceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EventId = table.Column<int>(type: "int", nullable: false),
+                    ActivityId = table.Column<int>(type: "int", nullable: false),
                     IsAttending = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Attendances", x => x.AttendanceId);
                     table.ForeignKey(
+                        name: "FK_Attendances_Activities_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activities",
+                        principalColumn: "ActivityId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Attendances_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Attendances_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
-                        principalColumn: "EventId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -264,49 +291,23 @@ namespace EventureAPI.Migrations
                     CommentText = table.Column<string>(type: "nvarchar(2500)", maxLength: 2500, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EventId = table.Column<int>(type: "int", nullable: false)
+                    ActivityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comments", x => x.CommentId);
+                    table.ForeignKey(
+                        name: "FK_Comments_Activities_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activities",
+                        principalColumn: "ActivityId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Comments_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Comments_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
-                        principalColumn: "EventId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EventCategories",
-                columns: table => new
-                {
-                    EventCategoryId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EventId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EventCategories", x => x.EventCategoryId);
-                    table.ForeignKey(
-                        name: "FK_EventCategories_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "CategoryId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EventCategories_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
-                        principalColumn: "EventId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -316,25 +317,66 @@ namespace EventureAPI.Migrations
                     RatingId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EventId = table.Column<int>(type: "int", nullable: false),
+                    ActivityId = table.Column<int>(type: "int", nullable: false),
                     Score = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ratings", x => x.RatingId);
                     table.ForeignKey(
+                        name: "FK_Ratings_Activities_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activities",
+                        principalColumn: "ActivityId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Ratings_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserEvents",
+                columns: table => new
+                {
+                    UserEventId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ActivityId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserEvents", x => x.UserEventId);
                     table.ForeignKey(
-                        name: "FK_Ratings_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
-                        principalColumn: "EventId",
+                        name: "FK_UserEvents_Activities_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activities",
+                        principalColumn: "ActivityId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserEvents_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activities_UserId",
+                table: "Activities",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ActivityCategories_ActivityId",
+                table: "ActivityCategories",
+                column: "ActivityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ActivityCategories_CategoryId",
+                table: "ActivityCategories",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -383,9 +425,9 @@ namespace EventureAPI.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Attendances_EventId",
+                name: "IX_Attendances_ActivityId",
                 table: "Attendances",
-                column: "EventId");
+                column: "ActivityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_UserId",
@@ -399,9 +441,9 @@ namespace EventureAPI.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_EventId",
+                name: "IX_Comments_ActivityId",
                 table: "Comments",
-                column: "EventId");
+                column: "ActivityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",
@@ -409,24 +451,9 @@ namespace EventureAPI.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventCategories_CategoryId",
-                table: "EventCategories",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EventCategories_EventId",
-                table: "EventCategories",
-                column: "EventId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Events_UserId",
-                table: "Events",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ratings_EventId",
+                name: "IX_Ratings_ActivityId",
                 table: "Ratings",
-                column: "EventId");
+                column: "ActivityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ratings_UserId",
@@ -442,11 +469,24 @@ namespace EventureAPI.Migrations
                 name: "IX_UserCategories_UserId",
                 table: "UserCategories",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserEvents_ActivityId",
+                table: "UserEvents",
+                column: "ActivityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserEvents_UserId",
+                table: "UserEvents",
+                column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ActivityCategories");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -469,22 +509,22 @@ namespace EventureAPI.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "EventCategories");
-
-            migrationBuilder.DropTable(
                 name: "Ratings");
 
             migrationBuilder.DropTable(
                 name: "UserCategories");
 
             migrationBuilder.DropTable(
+                name: "UserEvents");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Events");
+                name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Activities");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

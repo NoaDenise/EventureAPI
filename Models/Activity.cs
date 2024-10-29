@@ -9,7 +9,7 @@ namespace EventureAPI.Models
 
         [Required]
         public string UserId { get; set; }
-        public User User { get; set; }
+        public virtual User User { get; set; }
 
         [Required]
         [StringLength(100, MinimumLength = 2, ErrorMessage = "Namnet måste innehålla mellan 2 - 100 tecken" )]
@@ -44,5 +44,6 @@ namespace EventureAPI.Models
         public virtual ICollection<Rating> Ratings { get; set; }
         public virtual ICollection<ActivityCategory> ActivityCategories { get; set; }
         public virtual ICollection<Attendance> Attendances { get; set; }
+        public virtual ICollection<UserEvent> UserEvents { get; set; }
     }
 }
