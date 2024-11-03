@@ -72,6 +72,9 @@ namespace EventureAPI.Services
             //using data from user and activity-tables also
             return attendances.Select(a => new AttendanceShowDTO
             {
+
+                //added id
+                UserId = a.UserId,
                 FirstName = a.User.FirstName,
                 LastName = a.User.LastName,
                 ActivityId = a.ActivityId,
