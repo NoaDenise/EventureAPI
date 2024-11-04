@@ -14,15 +14,17 @@ namespace EventureAPI.Services
             _activityRepository = activityRepository;
         }
 
-        public async Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesAsync()
+        // Changed to Other dto that includes the filter things.
+        public async Task<IEnumerable<ActivityFilteredDTO>> GetAllActivitiesAsync()
         {
             var allActivities = await _activityRepository.GetAllActivitiesAsync();
 
-            return allActivities.Select(a => new ActivityShowDTO
+            return allActivities.Select(a => new ActivityFilteredDTO
             {
                 ActivityName = a.ActivityName,
                 ActivityDescription = a.ActivityDescription,
                 DateOfActivity = a.DateOfActivity,
+                ActivityLocation = a.ActivityLocation,
                 ImageUrl = a.ImageUrl,
                 WebsiteUrl = a.WebsiteUrl,
                 ContactInfo = a.ContactInfo
