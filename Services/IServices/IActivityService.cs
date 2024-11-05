@@ -20,5 +20,8 @@ namespace EventureAPI.Services.IServices
         Task<IEnumerable<ActivityShowDTO>> GetAllFamilyFriendlyActivitiesAsync(bool isFamilyFriendly);
         Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved);
 
+        // ny metod för att använda query i sökning
+        Task<IQueryable<Activity>> GetActivitiesQueryableAsync();
+
     }
 }

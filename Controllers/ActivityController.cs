@@ -192,7 +192,7 @@ namespace EventureAPI.Controllers
 
         //Endpoint for filtering, testing atm
         [HttpGet("getFilteredActivities")]
-        public async Task<ActionResult> GetAllActivities(
+        public async Task<ActionResult> GetFilteredActivities(
             bool? isFree = null,
             bool? is18Plus = null,
             bool? isFamilyFriendly = null,
@@ -200,7 +200,7 @@ namespace EventureAPI.Controllers
             DateTime? endDate = null,
             string location = null)
         {
-            var activities = await _activityService.GetAllActivitiesAsync();
+            var activities = await _activityService.GetActivitiesQueryableAsync();
 
             if (isFree.HasValue)
             {
@@ -227,7 +227,7 @@ namespace EventureAPI.Controllers
                 activities = activities.Where(a => a.ActivityLocation.ToLower().Contains(location.ToLower()));
             }
 
-            return Ok(activities);
+            return Ok(await activities.ToListAsync());
         }
     }
 }
