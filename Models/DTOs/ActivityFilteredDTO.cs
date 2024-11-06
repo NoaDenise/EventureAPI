@@ -4,6 +4,7 @@ namespace EventureAPI.Models.DTOs
 {
     public class ActivityFilteredDTO
     {
+        public int ActivityId { get; set; }
         public string ActivityName { get; set; }
         public string ActivityDescription { get; set; }
         public DateTime? DateOfActivity { get; set; }

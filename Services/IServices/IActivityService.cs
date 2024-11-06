@@ -5,7 +5,7 @@ namespace EventureAPI.Services.IServices
 {
     public interface IActivityService
     {
-        Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAsync();
+        //Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAsync();
         Task<IEnumerable<ActivityFilteredDTO>> GetAllActivitiesAsync();
         Task AddActivityAsync(ActivityCreateEditDTO activityDto);
         Task DeleteActivityAsync(int activityId);

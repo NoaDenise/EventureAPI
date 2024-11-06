@@ -16,25 +16,25 @@ namespace EventureAPI.Services
 
 
         //Q needed to add Id and location and bools for MVC, so used AShowAdminDto
-         public async Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAsync()
-  {
-      var allActivities = await _activityRepository.GetAllActivitiesAsync();
+        //       public async Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAsync()
+        //{
+        //    var allActivities = await _activityRepository.GetAllActivitiesAsync();
 
-      return allActivities.Select(a => new ActivityShowAdminDTO
-      {
-          ActivityId = a.ActivityId,
-          ActivityName = a.ActivityName,
-          ActivityDescription = a.ActivityDescription,
-          ActivityLocation = a.ActivityLocation,
-          DateOfActivity = a.DateOfActivity,
-          ImageUrl = a.ImageUrl,
-          WebsiteUrl = a.WebsiteUrl,
-          ContactInfo = a.ContactInfo,
-          IsFree = a.IsFree,
-          Is18Plus = a.Is18Plus,
-          IsFamilyFriendly = a.IsFamilyFriendly
-      }).ToList();
-  }
+        //    return allActivities.Select(a => new ActivityShowAdminDTO
+        //    {
+        //        ActivityId = a.ActivityId,
+        //        ActivityName = a.ActivityName,
+        //        ActivityDescription = a.ActivityDescription,
+        //        ActivityLocation = a.ActivityLocation,
+        //        DateOfActivity = a.DateOfActivity,
+        //        ImageUrl = a.ImageUrl,
+        //        WebsiteUrl = a.WebsiteUrl,
+        //        ContactInfo = a.ContactInfo,
+        //        IsFree = a.IsFree,
+        //        Is18Plus = a.Is18Plus,
+        //        IsFamilyFriendly = a.IsFamilyFriendly
+        //    }).ToList();
+        //}
 
         // Changed to Other dto that includes the filter things.
         public async Task<IEnumerable<ActivityFilteredDTO>> GetAllActivitiesAsync()
@@ -49,7 +49,6 @@ namespace EventureAPI.Services
                 ActivityDescription = a.ActivityDescription,
                 ActivityLocation = a.ActivityLocation,
                 DateOfActivity = a.DateOfActivity,
-                ActivityLocation = a.ActivityLocation,
                 ImageUrl = a.ImageUrl,
                 WebsiteUrl = a.WebsiteUrl,
                 ContactInfo = a.ContactInfo,
@@ -122,7 +121,7 @@ namespace EventureAPI.Services
             return chosenActivity;
 
         }
-        
+
         public async Task<IEnumerable<ActivityShowDTO>> GetAll18PlusActivitiesAsync(bool is18Plus)
         {
             try
@@ -154,7 +153,7 @@ namespace EventureAPI.Services
         {
             try
             {
-                var activities = await _activityRepository.GetAllActivitiesAwaitingApprovalAsync(isApproved);                return activities.Select(a => new ActivityShowAdminDTO
+                var activities = await _activityRepository.GetAllActivitiesAwaitingApprovalAsync(isApproved); return activities.Select(a => new ActivityShowAdminDTO
                 {
                     ActivityId = a.ActivityId,
                     UserId = a.UserId,
@@ -282,6 +281,7 @@ namespace EventureAPI.Services
             activity.IsApproved = true;
             await _activityRepository.EditActivityAsync(activity);
 
+        }
         public Task<IQueryable<Activity>> GetActivitiesQueryableAsync()
         {
             return _activityRepository.GetActivitiesQueryableAsync();
