@@ -126,5 +126,10 @@ namespace EventureAPI.Data.Repositories
                 .Where (a => a.IsFamilyFriendly)
                 .ToListAsync();
         }
+
+        public async Task<IQueryable<Activity>> GetActivitiesQueryableAsync()
+        {
+            return _context.Activities.AsQueryable();
+        }
     }
 }

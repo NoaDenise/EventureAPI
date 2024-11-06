@@ -5,7 +5,7 @@ namespace EventureAPI.Services.IServices
 {
     public interface IActivityService
     {
-        Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesAsync();
+        Task<IEnumerable<ActivityFilteredDTO>> GetAllActivitiesAsync();
         Task AddActivityAsync(ActivityCreateEditDTO activityDto);
         Task DeleteActivityAsync(int activityId);
         Task EditActivityAsync(int activityId, ActivityCreateEditDTO activityDto);
@@ -19,6 +19,9 @@ namespace EventureAPI.Services.IServices
 
         Task<IEnumerable<ActivityShowDTO>> GetAllFamilyFriendlyActivitiesAsync(bool isFamilyFriendly);
         Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved);
+
+        // ny metod för att använda query i sökning
+        Task<IQueryable<Activity>> GetActivitiesQueryableAsync();
 
     }
 }

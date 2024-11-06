@@ -189,5 +189,45 @@ namespace EventureAPI.Controllers
             var activities = await _activityService.GetAllActivitiesAsync();
             return Ok(activities);
         }
+
+        //Endpoint for filtering, testing atm
+        [HttpGet("getFilteredActivities")]
+        public async Task<ActionResult> GetFilteredActivities(
+            bool? isFree = null,
+            bool? is18Plus = null,
+            bool? isFamilyFriendly = null,
+            DateTime? startDate = null,
+            DateTime? endDate = null,
+            string location = null)
+        {
+            var activities = await _activityService.GetActivitiesQueryableAsync();
+
+            if (isFree.HasValue)
+            {
+                activities = activities.Where(a => a.IsFree == isFree.Value);
+            }
+            if (is18Plus.HasValue)
+            {
+                activities = activities.Where(a => a.Is18Plus == is18Plus.Value);
+            }
+            if (isFamilyFriendly.HasValue)
+            {
+                activities = activities.Where(a => a.IsFamilyFriendly == isFamilyFriendly.Value);
+            }
+            if (startDate.HasValue)
+            {
+                activities = activities.Where(a => a.DateOfActivity >= startDate.Value);
+            }
+            if (endDate.HasValue)
+            {
+                activities = activities.Where(a => a.DateOfActivity <= endDate.Value);
+            }
+            if (!string.IsNullOrEmpty(location))
+            {
+                activities = activities.Where(a => a.ActivityLocation.ToLower().Contains(location.ToLower()));
+            }
+
+            return Ok(await activities.ToListAsync());
+        }
     }
 }

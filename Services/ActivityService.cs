@@ -14,15 +14,17 @@ namespace EventureAPI.Services
             _activityRepository = activityRepository;
         }
 
-        public async Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesAsync()
+        // Changed to Other dto that includes the filter things.
+        public async Task<IEnumerable<ActivityFilteredDTO>> GetAllActivitiesAsync()
         {
             var allActivities = await _activityRepository.GetAllActivitiesAsync();
 
-            return allActivities.Select(a => new ActivityShowDTO
+            return allActivities.Select(a => new ActivityFilteredDTO
             {
                 ActivityName = a.ActivityName,
                 ActivityDescription = a.ActivityDescription,
                 DateOfActivity = a.DateOfActivity,
+                ActivityLocation = a.ActivityLocation,
                 ImageUrl = a.ImageUrl,
                 WebsiteUrl = a.WebsiteUrl,
                 ContactInfo = a.ContactInfo
@@ -40,7 +42,11 @@ namespace EventureAPI.Services
                 ActivityLocation = activityDto.ActivityLocation,
                 ImageUrl = activityDto.ImageUrl,
                 WebsiteUrl = activityDto.WebsiteUrl,
-                ContactInfo = activityDto.ContactInfo
+                ContactInfo = activityDto.ContactInfo,
+                IsFree = activityDto.IsFree,
+                Is18Plus = activityDto.Is18Plus,
+                IsFamilyFriendly = activityDto.IsFamilyFriendly,
+                IsApproved = false
             };
 
             await _activityRepository.AddActivityAsync(newActivity);
@@ -229,6 +235,11 @@ namespace EventureAPI.Services
                 throw new Exception("An error occurred while retrieving free activities. " + ex.Message);
             }
 
+        }
+
+        public Task<IQueryable<Activity>> GetActivitiesQueryableAsync()
+        {
+            return _activityRepository.GetActivitiesQueryableAsync();
         }
     }
 }
