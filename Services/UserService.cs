@@ -127,10 +127,31 @@ namespace EventureAPI.Services
         }
 
 
-        public async Task RegisterAsync(string firstName, string lastName, string userLocation, string userName, string email, string phoneNumber, string password)
+        public async Task RegisterAsync(string firstName, string lastName, string userLocation, string userName, string email, string phoneNumber, string password, string role ="user")
         {
-            var user = new User {FirstName = firstName, LastName = lastName, UserLocation = userLocation, UserName = userName, Email = email, PhoneNumber = phoneNumber };
+            var user = new User
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                UserLocation = userLocation, 
+                UserName = userName, 
+                Email = email,
+                PhoneNumber = phoneNumber 
+            };
             var result = await _userManager.CreateAsync(user, password);
+            if (!result.Succeeded)
+            {
+                throw new Exception("User registration failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
+            if (!string.IsNullOrEmpty(role))
+            {
+                var roleResult = await _userManager.AddToRoleAsync(user, role);
+                if (!roleResult.Succeeded)
+                {
+                    throw new Exception("Failed to add role: " + string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+                }
+            }
+    
         }
 
         private string GenerateJwtToken(User user)
@@ -161,6 +182,32 @@ namespace EventureAPI.Services
         public async Task<IEnumerable<Category>> GetUserPreferencesAsync(string userId)
         {
             return await _userRepo.GetUserPreferencesAsync(userId);
+        }
+        public async Task<IEnumerable<string>> GetUserRolesAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                return await _userManager.GetRolesAsync(user);
+            }
+            return new List<string>();
+        }
+        public async Task AssignRoleToUserAsync(string userId, string role)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                // Assign the role to the user
+                var result = await _userManager.AddToRoleAsync(user, role);
+                if (!result.Succeeded)
+                {
+                    throw new Exception("Failed to assign role: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
+            }
+            else
+            {
+                throw new Exception("User not found.");
+            }
         }
 
     }
