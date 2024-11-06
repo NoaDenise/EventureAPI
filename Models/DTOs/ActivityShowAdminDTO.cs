@@ -21,5 +21,7 @@
 
         public bool IsFree { get; set; }
         public bool Is18Plus { get; set; }
+
+        public bool IsFamilyFriendly { get; set; }
     }
 }

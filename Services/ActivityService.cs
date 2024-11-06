@@ -14,18 +14,24 @@ namespace EventureAPI.Services
             _activityRepository = activityRepository;
         }
 
-        public async Task<IEnumerable<ActivityShowDTO>> GetAllActivitiesAsync()
+        //Q needed to add Id and location and bools for MVC, so used AShowAdminDto
+        public async Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAsync()
         {
             var allActivities = await _activityRepository.GetAllActivitiesAsync();
 
-            return allActivities.Select(a => new ActivityShowDTO
+            return allActivities.Select(a => new ActivityShowAdminDTO
             {
+                ActivityId = a.ActivityId,
                 ActivityName = a.ActivityName,
                 ActivityDescription = a.ActivityDescription,
+                ActivityLocation = a.ActivityLocation,
                 DateOfActivity = a.DateOfActivity,
                 ImageUrl = a.ImageUrl,
                 WebsiteUrl = a.WebsiteUrl,
-                ContactInfo = a.ContactInfo
+                ContactInfo = a.ContactInfo,
+                IsFree = a.IsFree,
+                Is18Plus = a.Is18Plus,
+                IsFamilyFriendly = a.IsFamilyFriendly
             }).ToList();
         }
 
@@ -55,7 +61,7 @@ namespace EventureAPI.Services
             await _activityRepository.DeleteActivityAsync(activity);
         }
 
-
+        //Q edited endpoint to match mvc
         public async Task EditActivityAsync(int activityId, ActivityCreateEditDTO activityDto)
         {
             var activity = await _activityRepository.GetActivityByIdAsync(activityId);
@@ -69,6 +75,10 @@ namespace EventureAPI.Services
             activity.ImageUrl = activityDto.ImageUrl;
             activity.WebsiteUrl = activityDto.WebsiteUrl;
             activity.ContactInfo = activityDto.ContactInfo;
+            activity.IsApproved = activity.IsApproved;
+            activity.IsFree = activityDto.IsFree;
+            activity.Is18Plus = activityDto.Is18Plus;
+            activity.IsFamilyFriendly = activityDto.IsFamilyFriendly;
 
             await _activityRepository.EditActivityAsync(activity);
         }
@@ -229,6 +239,19 @@ namespace EventureAPI.Services
                 throw new Exception("An error occurred while retrieving free activities. " + ex.Message);
             }
 
+        }
+
+        public async Task ApproveActivityAsync(int activityId)
+        {
+            var activity = await _activityRepository.GetActivityByIdAsync(activityId);
+            if (activity == null)
+            {
+                throw new Exception("Activity not found");
+            }
+
+            //when approving the activity in MVC, the false turns into true
+            activity.IsApproved = true;
+            await _activityRepository.EditActivityAsync(activity);
         }
     }
 }

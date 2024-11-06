@@ -126,5 +126,13 @@ namespace EventureAPI.Data.Repositories
                 .Where (a => a.IsFamilyFriendly)
                 .ToListAsync();
         }
+
+        public async Task ApproveActivityAsync(int activityId)
+        {
+            //find the specific activity to update
+            var activity = await _context.Activities.FindAsync(activityId);
+            _context.Activities.Update(activity);
+            await _context.SaveChangesAsync();
+        }
     }
 }

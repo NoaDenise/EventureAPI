@@ -28,6 +28,7 @@ namespace EventureAPI.Models.DTOs
 
         [StringLength(2000, MinimumLength = 3, ErrorMessage = "Kontaktinfo måste vara mellan 3 - 2000 tecken")]
         public string? ContactInfo { get; set; }
+        public bool IsApproved { get; set; }
 
         [Required]
         public bool IsFree { get; set; }

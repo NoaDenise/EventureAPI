@@ -189,5 +189,19 @@ namespace EventureAPI.Controllers
             var activities = await _activityService.GetAllActivitiesAsync();
             return Ok(activities);
         }
+
+        [HttpPut("approveActivity/{activityId}")]
+        public async Task<ActionResult> ApproveActivity(int activityId)
+        {
+            try
+            {
+                await _activityService.ApproveActivityAsync(activityId);
+                return Ok("Activity approved");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error in approving activity");
+            }
+        }
     }
 }

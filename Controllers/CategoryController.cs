@@ -21,7 +21,7 @@ namespace EventureAPI.Controllers
         // GET: api/Category
         // Retrieves all categories
         [HttpGet("getAllCategories")]
-        public async Task<ActionResult<IEnumerable<CategoryShowDTO>>> GetAllCategories()
+        public async Task<ActionResult<IEnumerable<CategoryShowAdminDTO>>> GetAllCategories()
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
             return Ok(categories); 
