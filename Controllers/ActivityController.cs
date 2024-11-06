@@ -204,9 +204,10 @@ namespace EventureAPI.Controllers
                 return BadRequest("Error in approving activity");
             }
 
+        }
         //Endpoint for filtering, testing atm
         [HttpGet("getFilteredActivities")]
-        public async Task<ActionResult> GetFilteredActivities(
+        public async Task<ActionResult> GetAllActivities(
             bool? isFree = null,
             bool? is18Plus = null,
             bool? isFamilyFriendly = null,
@@ -214,8 +215,7 @@ namespace EventureAPI.Controllers
             DateTime? endDate = null,
             string location = null)
         {
-            var activities = await _activityService.GetActivitiesQueryableAsync();
-
+            var activities = await _activityService.GetAllActivitiesAsync();
             if (isFree.HasValue)
             {
                 activities = activities.Where(a => a.IsFree == isFree.Value);
@@ -240,9 +240,7 @@ namespace EventureAPI.Controllers
             {
                 activities = activities.Where(a => a.ActivityLocation.ToLower().Contains(location.ToLower()));
             }
-
-            return Ok(await activities.ToListAsync());
-
+            return Ok(activities);
         }
     }
 }
