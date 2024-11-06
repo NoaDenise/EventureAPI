@@ -2,6 +2,7 @@
 using EventureAPI.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace EventureAPI.Controllers
 {
@@ -63,10 +64,41 @@ namespace EventureAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterUserDTO regUser)
+        public async Task<IActionResult> Register([FromBody] RegisterUserDTO regUser, string role)
         {
-            await _userService.RegisterAsync(regUser.FirstName, regUser.LastName, regUser.UserLocation, regUser.UserName, regUser.Email, regUser.PhoneNumber, regUser.Password);
-            return Ok();
+            try
+            {
+
+                await _userService.RegisterAsync(
+                regUser.FirstName,
+                regUser.LastName,
+                regUser.UserLocation,
+                regUser.UserName,
+                regUser.Email,
+                regUser.PhoneNumber,
+                regUser.Password,
+                role
+                );
+                return Ok(new { message = "User registered successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("{userId}/assignRole")]
+        public async Task<IActionResult> AssignRoleToUser(string userId, [FromBody] string role)
+        {
+            try
+            {
+                await _userService.AssignRoleToUserAsync(userId, role);
+                return Ok(new { message = "Role assigned successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // POST: api/user/{userId}/categories/{categoryId}
@@ -94,5 +126,7 @@ namespace EventureAPI.Controllers
 
             return Ok(preferences);
         }
+       
+
     }
 }

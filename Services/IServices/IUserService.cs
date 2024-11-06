@@ -12,9 +12,12 @@ namespace EventureAPI.Services.IServices
         Task DeleteUserAsync(string userId);
         Task<UserShowDTO> GetUserByIdAsync(string userId);
         Task<string> LoginAsync(string email, string password);
-        Task RegisterAsync(string firstName, string lastName, string userLocation, string userName, string email, string phoneNumber, string password);
+        Task RegisterAsync(string firstName, string lastName, string userLocation, string userName, string email, string phoneNumber, string password, string role);
         Task AddCategoryToUserAsync(string userId, int categoryId);
         Task<IEnumerable<Category>> GetUserPreferencesAsync(string userId);
+        Task<IEnumerable<string>> GetUserRolesAsync(string userId);
+        // Assigns a role to a user
+        Task AssignRoleToUserAsync(string userId, string role);
 
 
     }

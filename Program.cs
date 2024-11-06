@@ -43,6 +43,21 @@ namespace EventureAPI
                     };
                 });
 
+            builder.Services.AddIdentityCore<User>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                    //options.Password.RequiredLength = 8;
+                })
+              .AddRoles<IdentityRole>()
+              .AddEntityFrameworkStores<EventureContext>()
+              .AddDefaultTokenProviders();
+
+            // Register RoleManager and UserManager
+            builder.Services.AddScoped<RoleManager<IdentityRole>>();
+            builder.Services.AddScoped<UserManager<User>>();
+
+
+
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -78,6 +93,21 @@ namespace EventureAPI
 
             var app = builder.Build();
 
+            // Create roles 
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                try
+                {
+                    CreateRolesAsync(services).Wait();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "An error occurred while creating roles.");
+                }
+            }
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -90,11 +120,41 @@ namespace EventureAPI
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //app.MapIdentityApi<User>();
 
             app.MapControllers();
 
             app.Run();
+        }
+        // Create roles 
+
+        private static async Task CreateRolesAsync(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+
+
+            string[] roleNames = { "admin", "user" };
+            foreach (var roleName in roleNames)
+            {
+                var roleExists = await roleManager.RoleExistsAsync(roleName);
+                if (!roleExists)
+                {
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+
+            // Optionally, create a default admin user
+            var adminEmail = "admin@example.com";
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            if (adminUser == null)
+            {
+                var newAdmin = new User { UserName = "admin", Email = adminEmail };
+                var result = await userManager.CreateAsync(newAdmin, "Admin@1234"); 
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(newAdmin, "admin");
+                }
+            }
         }
     }
 }
