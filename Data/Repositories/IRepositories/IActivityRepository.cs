@@ -17,7 +17,9 @@ namespace EventureAPI.Data.Repositories.IRepositories
         Task<IEnumerable<Activity>> GetAll18PlusActivitiesAsync(bool is18Plus);
         Task<IEnumerable<Activity>> GetAllFamilyFriendlyActivitiesAsync(bool isFamilyFriendly);
         Task<IEnumerable<Activity>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved);
-
         Task ApproveActivityAsync(int activityId);
+        Task<IQueryable<Activity>> GetActivitiesQueryableAsync();
+
+
     }
 }

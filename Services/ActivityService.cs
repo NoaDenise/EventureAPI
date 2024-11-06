@@ -1,4 +1,4 @@
-﻿using EventureAPI.Data.Repositories.IRepositories;
+using EventureAPI.Data.Repositories.IRepositories;
 using EventureAPI.Models;
 using EventureAPI.Models.DTOs;
 using EventureAPI.Services.IServices;
@@ -14,18 +14,42 @@ namespace EventureAPI.Services
             _activityRepository = activityRepository;
         }
 
+
         //Q needed to add Id and location and bools for MVC, so used AShowAdminDto
-        public async Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAsync()
+         public async Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAsync()
+  {
+      var allActivities = await _activityRepository.GetAllActivitiesAsync();
+
+      return allActivities.Select(a => new ActivityShowAdminDTO
+      {
+          ActivityId = a.ActivityId,
+          ActivityName = a.ActivityName,
+          ActivityDescription = a.ActivityDescription,
+          ActivityLocation = a.ActivityLocation,
+          DateOfActivity = a.DateOfActivity,
+          ImageUrl = a.ImageUrl,
+          WebsiteUrl = a.WebsiteUrl,
+          ContactInfo = a.ContactInfo,
+          IsFree = a.IsFree,
+          Is18Plus = a.Is18Plus,
+          IsFamilyFriendly = a.IsFamilyFriendly
+      }).ToList();
+  }
+
+        // Changed to Other dto that includes the filter things.
+        public async Task<IEnumerable<ActivityFilteredDTO>> GetAllActivitiesAsync()
         {
             var allActivities = await _activityRepository.GetAllActivitiesAsync();
 
-            return allActivities.Select(a => new ActivityShowAdminDTO
+            return allActivities.Select(a => new ActivityFilteredDTO
+
             {
                 ActivityId = a.ActivityId,
                 ActivityName = a.ActivityName,
                 ActivityDescription = a.ActivityDescription,
                 ActivityLocation = a.ActivityLocation,
                 DateOfActivity = a.DateOfActivity,
+                ActivityLocation = a.ActivityLocation,
                 ImageUrl = a.ImageUrl,
                 WebsiteUrl = a.WebsiteUrl,
                 ContactInfo = a.ContactInfo,
@@ -46,7 +70,11 @@ namespace EventureAPI.Services
                 ActivityLocation = activityDto.ActivityLocation,
                 ImageUrl = activityDto.ImageUrl,
                 WebsiteUrl = activityDto.WebsiteUrl,
-                ContactInfo = activityDto.ContactInfo
+                ContactInfo = activityDto.ContactInfo,
+                IsFree = activityDto.IsFree,
+                Is18Plus = activityDto.Is18Plus,
+                IsFamilyFriendly = activityDto.IsFamilyFriendly,
+                IsApproved = false
             };
 
             await _activityRepository.AddActivityAsync(newActivity);
@@ -241,6 +269,7 @@ namespace EventureAPI.Services
 
         }
 
+
         public async Task ApproveActivityAsync(int activityId)
         {
             var activity = await _activityRepository.GetActivityByIdAsync(activityId);
@@ -252,6 +281,11 @@ namespace EventureAPI.Services
             //when approving the activity in MVC, the false turns into true
             activity.IsApproved = true;
             await _activityRepository.EditActivityAsync(activity);
+
+        public Task<IQueryable<Activity>> GetActivitiesQueryableAsync()
+        {
+            return _activityRepository.GetActivitiesQueryableAsync();
+
         }
     }
 }
