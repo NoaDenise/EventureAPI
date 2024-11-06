@@ -190,6 +190,20 @@ namespace EventureAPI.Controllers
             return Ok(activities);
         }
 
+
+        [HttpPut("approveActivity/{activityId}")]
+        public async Task<ActionResult> ApproveActivity(int activityId)
+        {
+            try
+            {
+                await _activityService.ApproveActivityAsync(activityId);
+                return Ok("Activity approved");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error in approving activity");
+            }
+
         //Endpoint for filtering, testing atm
         [HttpGet("getFilteredActivities")]
         public async Task<ActionResult> GetFilteredActivities(
@@ -228,6 +242,7 @@ namespace EventureAPI.Controllers
             }
 
             return Ok(await activities.ToListAsync());
+
         }
     }
 }

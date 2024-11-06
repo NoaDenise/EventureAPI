@@ -90,6 +90,7 @@ namespace EventureAPI.Services
                 throw new KeyNotFoundException($"Category with ID {categoryId} not found.");
             }
             // Update category properties from the DTO
+ 
             category.CategoryName = categoryCreateEditDTO.CategoryName;
             category.CategoryDescription = categoryCreateEditDTO.CategoryDescription;
 
@@ -104,14 +105,16 @@ namespace EventureAPI.Services
             }
         }
         // Method to retrieve all categories
-        public async Task<IEnumerable<CategoryShowDTO>> GetAllCategoriesAsync()
+        //Quynh used categoryshowadminDto for MVC
+        public async Task<IEnumerable<CategoryShowAdminDTO>> GetAllCategoriesAsync()
         {
             try
             {
                 var categories = await _categoryRepository.GetAllCategoriesAsync();
 
-                return categories.Select(category => new CategoryShowDTO
+                return categories.Select(category => new CategoryShowAdminDTO
                 {
+                    CategoryId = category.CategoryId,
                     CategoryName = category.CategoryName,
                     CategoryDescription = category.CategoryDescription
                 }).ToList();
@@ -123,6 +126,8 @@ namespace EventureAPI.Services
             }
 
         }
+
+
 
         // Method to retrieve a category by ID
         public async Task<CategoryShowDTO> GetCategoryByIdAsync(int categoryId)

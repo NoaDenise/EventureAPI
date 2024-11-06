@@ -1,10 +1,11 @@
-﻿using EventureAPI.Models;
+using EventureAPI.Models;
 using EventureAPI.Models.DTOs;
 
 namespace EventureAPI.Services.IServices
 {
     public interface IActivityService
     {
+        Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAsync();
         Task<IEnumerable<ActivityFilteredDTO>> GetAllActivitiesAsync();
         Task AddActivityAsync(ActivityCreateEditDTO activityDto);
         Task DeleteActivityAsync(int activityId);
@@ -19,6 +20,7 @@ namespace EventureAPI.Services.IServices
 
         Task<IEnumerable<ActivityShowDTO>> GetAllFamilyFriendlyActivitiesAsync(bool isFamilyFriendly);
         Task<IEnumerable<ActivityShowAdminDTO>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved);
+        Task ApproveActivityAsync(int activityId);
 
         // ny metod för att använda query i sökning
         Task<IQueryable<Activity>> GetActivitiesQueryableAsync();
