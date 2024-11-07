@@ -18,8 +18,9 @@ namespace EventureAPI.Services.IServices
         Task<IEnumerable<string>> GetUserRolesAsync(string userId);
         // Assigns a role to a user
         Task AssignRoleToUserAsync(string userId, string role);
-
         Task AddUserEvent(string userId, int activityId);
-
+        Task<IEnumerable<UserEventMyPagesDTO>> GetAllUserEventsAsync();
+        Task<UserEventMyPagesDTO> GetUserEventByIdAsync(int userEventId);
+        Task DeleteUserEventAsync(int userEventId);
     }
 }
