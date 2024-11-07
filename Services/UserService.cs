@@ -254,10 +254,27 @@ namespace EventureAPI.Services
 
             if (userEventToDelete == null)
             {
-                throw new Exception("Something went wrong when trying to find liked activity");
+                throw new Exception("Something went wrong, when trying to find liked activity");
             }
 
             await _userRepo.DeleteUserEventAsync(userEventToDelete);
+        }
+
+        public async Task<IEnumerable<UserEventMyPagesDTO>> GetUserEventsByCategory(int categoryId)
+        {
+            var userEvents = await _userRepo.GetUserEventsByCategoryAsync(categoryId);
+
+            if (userEvents == null)
+            {
+                throw new Exception("Something went wrong, when trying to find liked activities");
+            }
+
+            return userEvents.Select(userEvent => new UserEventMyPagesDTO
+            {
+                ActivityName = userEvent.Activity.ActivityName,
+                ActivityLocation = userEvent.Activity.ActivityLocation,
+                DateOfActivity = userEvent.Activity.DateOfActivity
+            }).ToList();
         }
     }
 }

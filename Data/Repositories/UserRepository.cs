@@ -119,5 +119,10 @@ namespace EventureAPI.Data.Repositories
             _context.UserEvents.Remove(userEvent);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<UserEvent>> GetUserEventsByCategoryAsync(int categoryId)
+        {
+            return await _context.UserEvents.Include(u => u.User).Include(a => a.Activity).Include(ac => ac.Activity.ActivityCategories).ToListAsync();
+        }
     }
 }

@@ -16,5 +16,6 @@ namespace EventureAPI.Data.Repositories.IRepositories
         Task<IEnumerable<UserEvent>> GetAllUserEventsAsync();
         Task<UserEvent> GetUserEventByIdAsync(int userEventId);
         Task DeleteUserEventAsync(UserEvent userEvent);
+        Task<IEnumerable<UserEvent>> GetUserEventsByCategoryAsync(int categoryId);
     }
 }

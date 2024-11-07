@@ -78,7 +78,8 @@ namespace EventureAPI.Services
         }
 
         // Method to edit an existing category
-        public async Task EditCategoryAsync(int categoryId, CategoryCreateEditDTO categoryCreateEditDTO)
+        //Q trying with categorysaDTO because it has ID in it
+        public async Task EditCategoryAsync(int categoryId, CategoryShowAdminDTO categoryShowAdminDTO)
         {
             // Retrieve the category from the repository
             var category = await _categoryRepository.GetCategoryByIdAsync(categoryId);
@@ -91,8 +92,8 @@ namespace EventureAPI.Services
             }
             // Update category properties from the DTO
  
-            category.CategoryName = categoryCreateEditDTO.CategoryName;
-            category.CategoryDescription = categoryCreateEditDTO.CategoryDescription;
+            category.CategoryName = categoryShowAdminDTO.CategoryName;
+            category.CategoryDescription = categoryShowAdminDTO.CategoryDescription;
 
             try
             {

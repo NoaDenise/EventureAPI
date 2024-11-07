@@ -22,5 +22,6 @@ namespace EventureAPI.Services.IServices
         Task<IEnumerable<UserEventMyPagesDTO>> GetAllUserEventsAsync();
         Task<UserEventMyPagesDTO> GetUserEventByIdAsync(int userEventId);
         Task DeleteUserEventAsync(int userEventId);
+        Task<IEnumerable<UserEventMyPagesDTO>> GetUserEventsByCategory(int categoryId);
     }
 }
