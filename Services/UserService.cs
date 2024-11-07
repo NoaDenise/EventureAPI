@@ -215,5 +215,49 @@ namespace EventureAPI.Services
         {
             await _userRepo.AddUserEvent(userId, activityId);
         }
+
+        public async Task<IEnumerable<UserEventMyPagesDTO>> GetAllUserEventsAsync()
+        {
+            var userEvents = await _userRepo.GetAllUserEventsAsync();
+
+            //if user looks at their list of liked activities, they will see this,
+            //if they want to see details, they click into detailed activity-view in MVC
+            return userEvents.Select(userEvent => new UserEventMyPagesDTO
+            {
+                ActivityName = userEvent.Activity.ActivityName,
+                ActivityLocation = userEvent.Activity.ActivityLocation,
+                DateOfActivity = userEvent.Activity.DateOfActivity
+
+            }).ToList();
+        }
+
+        public async Task<UserEventMyPagesDTO> GetUserEventByIdAsync(int userEventId)
+        {
+            var userEvent = await _userRepo.GetUserEventByIdAsync(userEventId);
+
+            if (userEvent == null)
+            {
+                throw new Exception($"User's liked activity not found.");
+            }
+
+            return new UserEventMyPagesDTO
+            {
+                ActivityName = userEvent.Activity.ActivityName,
+                ActivityLocation = userEvent.Activity.ActivityLocation,
+                DateOfActivity = userEvent.Activity.DateOfActivity
+            };
+        }
+
+        public async Task DeleteUserEventAsync(int userEventId)
+        {
+            var userEventToDelete = await _userRepo.GetUserEventByIdAsync(userEventId);
+
+            if (userEventToDelete == null)
+            {
+                throw new Exception("Something went wrong when trying to find liked activity");
+            }
+
+            await _userRepo.DeleteUserEventAsync(userEventToDelete);
+        }
     }
 }

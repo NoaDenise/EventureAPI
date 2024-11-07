@@ -103,5 +103,21 @@ namespace EventureAPI.Data.Repositories
             _context.UserEvents.Add(userEvent);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<UserEvent>> GetAllUserEventsAsync()
+        {
+            return await _context.UserEvents.Include(u => u.User).Include(a => a.Activity).ToListAsync();
+        }
+
+        public async Task<UserEvent> GetUserEventByIdAsync(int userEventId)
+        {
+            return await _context.UserEvents.Include(u => u.User).Include(a => a.Activity).SingleOrDefaultAsync(ue => ue.UserEventId == userEventId);
+        }
+
+        public async Task DeleteUserEventAsync(UserEvent userEvent)
+        {
+            _context.UserEvents.Remove(userEvent);
+            await _context.SaveChangesAsync();
+        }
     }
 }

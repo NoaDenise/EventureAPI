@@ -1,4 +1,5 @@
-﻿using EventureAPI.Models.DTOs;
+﻿using EventureAPI.Models;
+using EventureAPI.Models.DTOs;
 using EventureAPI.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -133,6 +134,38 @@ namespace EventureAPI.Controllers
             await _userService.AddUserEvent(userId, activityId);
             
             return Ok();
+        }
+
+        //endpoint will be used on user's My pages, where they can they all activites they have saved/liked
+        [HttpGet("getAllUserEvents")]
+        public async Task<ActionResult<IEnumerable<UserEvent>>> GetAllUserEvents()
+        {
+            var userEvents = await _userService.GetAllUserEventsAsync();
+
+            return Ok(userEvents);
+        }
+
+        [HttpGet("getUserEventById")]
+        public async Task<ActionResult<UserEvent>> GetUserEventById(int userEventId)
+        {
+            var userEvent = await _userService.GetUserEventByIdAsync(userEventId);
+
+            return Ok(userEvent);
+        }
+
+        //this endpoint will be used on user's My pages, where they can delete saved/liked Activity
+        [HttpDelete("deleteUserEvent")]
+        public async Task<ActionResult> DeleteUserEvent(int userEventId)
+        {
+            try
+            {
+                await _userService.DeleteUserEventAsync(userEventId);
+                return Ok("Liked activity removed from your list.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error in handling request.");
+            }
         }
     }
 }
