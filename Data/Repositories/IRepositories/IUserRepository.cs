@@ -12,7 +12,7 @@ namespace EventureAPI.Data.Repositories.IRepositories
         Task<User> GetUserByEmailAsync(string email);
         Task AddCategoryToUserAsync(string userId, int categoryId);
         Task<IEnumerable<Category>> GetUserPreferencesAsync(string userId);
-
+        Task AddUserEvent(string userId, int activityId);
 
     }
 }

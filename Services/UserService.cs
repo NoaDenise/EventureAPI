@@ -210,5 +210,10 @@ namespace EventureAPI.Services
             }
         }
 
+        //Connects User and Event together in the UserEvent table. (for likes in frontend)
+        public async Task AddUserEvent(string userId, int activityId)
+        {
+            await _userRepo.AddUserEvent(userId, activityId);
+        }
     }
 }
