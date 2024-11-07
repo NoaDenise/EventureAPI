@@ -167,5 +167,20 @@ namespace EventureAPI.Controllers
                 return StatusCode(500, "Error in handling request.");
             }
         }
+
+        //this endpoint will be used on user's My pages to sort saved activities by category
+        [HttpGet("getUserEventsByCategory")]
+        public async Task<ActionResult<IEnumerable<UserEvent>>> GetUserEventsByCategory(int catergoryId)
+        {
+            try
+            {
+                var userEvents = await _userService.GetUserEventsByCategory(catergoryId);
+                return Ok(userEvents);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error in handling request");
+            }
+        }
     }
 }
