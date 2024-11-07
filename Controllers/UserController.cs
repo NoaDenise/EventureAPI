@@ -126,7 +126,13 @@ namespace EventureAPI.Controllers
 
             return Ok(preferences);
         }
-       
 
+        [HttpPost("addUserEvent/{userId}/{activityId}")]
+        public async Task<IActionResult> AddUserEvent(string userId, int activityId)
+        {
+            await _userService.AddUserEvent(userId, activityId);
+            
+            return Ok();
+        }
     }
 }

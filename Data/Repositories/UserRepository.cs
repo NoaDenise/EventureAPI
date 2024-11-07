@@ -1,5 +1,6 @@
 ﻿using EventureAPI.Data.Repositories.IRepositories;
 using EventureAPI.Models;
+using EventureAPI.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventureAPI.Data.Repositories
@@ -81,6 +82,26 @@ namespace EventureAPI.Data.Repositories
                 .Where(uc => uc.UserId == userId)
                 .Select(uc => uc.Category)
                 .ToListAsync();
+        }
+
+        public async Task AddUserEvent(string userId, int activityId)
+        {
+            bool exists  = await _context.UserEvents
+                .AnyAsync(ue => ue.UserId == userId && ue.ActivityId == activityId);
+
+            if (exists)
+            {
+                return;
+            }
+
+            var userEvent = new UserEvent
+            {
+                UserId = userId,
+                ActivityId = activityId
+            };
+
+            _context.UserEvents.Add(userEvent);
+            await _context.SaveChangesAsync();
         }
     }
 }
