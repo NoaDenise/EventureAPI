@@ -57,7 +57,10 @@ namespace EventureAPI.Controllers
             try
             {
                 await _categoryService.AddCategoryAsync(categoryCreateEditDTO);
-                return CreatedAtAction(nameof(GetCategoryById), new { id = categoryCreateEditDTO.CategoryName }, new { message = "Category added successfully." }); 
+                //CategoryName should be CategoryId?
+                //return CreatedAtAction(nameof(GetCategoryById), new { id = categoryCreateEditDTO.CategoryName }, new { message = "Category added successfully." }); 
+
+                return Ok("Category created");
             }
             catch (Exception ex)
             {
@@ -69,7 +72,7 @@ namespace EventureAPI.Controllers
         // Edits an existing category by ID
         [HttpPut("editCategory/{id}")]
        /* [Authorize] */// Requires authorization to access this endpoint
-        public async Task<ActionResult> EditCategory(int id, [FromBody] CategoryShowAdminDTO categoryShowAdminDTO)
+        public async Task<ActionResult> EditCategory(int id, [FromBody] CategoryCreateEditDTO categoryCreateEditDTO)
         {
             if (!ModelState.IsValid) 
             {
@@ -78,7 +81,7 @@ namespace EventureAPI.Controllers
 
             try
             {
-                await _categoryService.EditCategoryAsync(id, categoryShowAdminDTO);
+                await _categoryService.EditCategoryAsync(id, categoryCreateEditDTO);
                 return Ok(new { message = "Category updated successfully." });
             }
             catch (KeyNotFoundException ex)
