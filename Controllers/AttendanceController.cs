@@ -127,6 +127,18 @@ namespace EventureAPI.Controllers
 
             return Ok(attendance);
         }
-        //GET för en persons attendance?
+
+        [HttpGet("getUsersAttendance/{userId}")]
+        public async Task<ActionResult<IEnumerable<AttendanceShowDTO>>> GetUsersAttendance(string userId)
+        {
+            var attendance = await _attendanceService.GetUsersAttendanceAsync(userId);
+
+            if (userId == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(attendance);
+        }
     }
 }

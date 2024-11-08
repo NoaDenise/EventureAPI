@@ -29,12 +29,14 @@ namespace EventureAPI.Services
             _config = config;
         }
 
+        //added field for Id, if MVC is listing users on Admin pages
         public async Task<IEnumerable<UserShowDTO>> GetAllUsersAsync()
         {
             var allUsers = await _userRepo.GetAllUsersAsync();
 
             return allUsers.Select(u => new UserShowDTO
             {
+                Id = u.Id,
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,

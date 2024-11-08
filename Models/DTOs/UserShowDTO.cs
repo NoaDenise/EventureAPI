@@ -4,6 +4,7 @@ namespace EventureAPI.Models.DTOs
 {
     public class UserShowDTO
     {
+        public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string? UserLocation { get; set; }
