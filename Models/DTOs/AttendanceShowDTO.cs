@@ -9,6 +9,9 @@ namespace EventureAPI.Models.DTOs
         public string LastName { get; set; }
         public int ActivityId { get; set; }
         public string ActivityName { get; set; }
+        public string ActivityLocation { get; set; }
+        public DateTime? DateOfActivity { get; set; }
+
         public bool? IsAttending { get; set; }
     }
 }

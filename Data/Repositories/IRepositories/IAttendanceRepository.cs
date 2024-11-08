@@ -10,5 +10,6 @@ namespace EventureAPI.Data.Repositories.IRepositories
         Task DeleteAttendanceAsync(Attendance attendance);
         Task<Attendance> GetAttendanceByIdAsync(int attendanceId);
         Task<IEnumerable<Attendance>> GetAttendanceByActivityAsync(int activityId);
+        Task<IEnumerable<Attendance>> GetUsersAttendanceAsync(string userId);
     }
 }

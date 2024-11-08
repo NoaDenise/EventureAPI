@@ -4,6 +4,8 @@ namespace EventureAPI.Models.DTOs
 {
     public class UserShowWithIdDTO
     {
+        //do we need this dto - added id in usershowDTO?
+        
         public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

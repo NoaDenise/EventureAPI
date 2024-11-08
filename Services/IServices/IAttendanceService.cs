@@ -11,5 +11,6 @@ namespace EventureAPI.Services.IServices
         Task DeleteAttendanceAsync(int attendanceId);
         Task<AttendanceShowDTO> GetAttendanceByIdAsync(int attendanceId);
         Task<IEnumerable<AttendanceShowDTO>> GetAttendanceByActivityAsync(int activityId);
+        Task<IEnumerable<AttendanceShowDTO>> GetUsersAttendanceAsync(string userId);
     }
 }

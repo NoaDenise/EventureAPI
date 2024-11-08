@@ -120,5 +120,18 @@ namespace EventureAPI.Services
 
             }).ToList();
         }
+
+        public async Task<IEnumerable<AttendanceShowDTO>> GetUsersAttendanceAsync(string userId)
+        {
+            var attendances = await _attendanceRepository.GetUsersAttendanceAsync(userId);
+
+            //had to add location and date to dto, so that relevant info will be shown when getting one's attendance on My Pages
+            return attendances.Select(a => new AttendanceShowDTO
+            {
+                ActivityName = a.Activity.ActivityName,
+                ActivityLocation = a.Activity.ActivityLocation,
+                DateOfActivity = a.Activity.DateOfActivity
+            }).ToList();
+        }
     }
 }
