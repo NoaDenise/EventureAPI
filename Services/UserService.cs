@@ -19,6 +19,7 @@ namespace EventureAPI.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _config;
+        private readonly ILogger _logger;
 
         public UserService(IUserRepository userRepo, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config)
         {
@@ -123,7 +124,12 @@ namespace EventureAPI.Services
                 return token;  // Return the generated token
             }
             // If login fails
-            return null;
+            else
+            {
+                
+                _logger.LogWarning($"Login failed for user {email}. Reason: {result.ToString()}");
+                return null;
+            }
         }
 
 

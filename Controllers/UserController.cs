@@ -1,9 +1,11 @@
 ﻿using EventureAPI.Models;
 using EventureAPI.Models.DTOs;
 using EventureAPI.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using System.Security.Claims;
 
 namespace EventureAPI.Controllers
 {
@@ -56,6 +58,7 @@ namespace EventureAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginUserDTO login)
         {
+            // Call the UserService to authenticate the user and generate a JWT token
             var token = await _userService.LoginAsync(login.Email, login.Password);
             if (token != null)
             {
@@ -88,11 +91,15 @@ namespace EventureAPI.Controllers
             }
         }
 
+
+
+        // This method assigns a new role to a user
         [HttpPost("{userId}/assignRole")]
         public async Task<IActionResult> AssignRoleToUser(string userId, [FromBody] string role)
         {
             try
             {
+                // Attempt to assign the role to the user via the UserService
                 await _userService.AssignRoleToUserAsync(userId, role);
                 return Ok(new { message = "Role assigned successfully." });
             }
@@ -100,6 +107,30 @@ namespace EventureAPI.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+        [Authorize]// Only authorized users can access this endpoint
+        [HttpGet("getRole")]
+        public async Task<IActionResult> GetUserRole()
+        {
+            // Retrieve the user ID from the JWT token (which is automatically provided by the authentication system)
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // If the user ID is not found in the JWT token, return an Unauthorized response
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID not found.");
+            }
+
+            // Call the UserService to get the roles associated with the user ID
+            var roles = await _userService.GetUserRolesAsync(userId);
+
+            if (roles == null || !roles.Any())
+            {
+                return NotFound("Roles not found for the user.");
+            }
+
+            // Return the first role from the roles list (if the user has multiple roles, this can be adjusted)
+            return Ok(new { role = roles.First() });
         }
 
         // POST: api/user/{userId}/categories/{categoryId}
