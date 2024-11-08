@@ -7,7 +7,7 @@ namespace EventureAPI.Services.IServices
     {
         Task<IEnumerable<CategoryShowAdminDTO>> GetAllCategoriesAsync();
         Task AddCategoryAsync(CategoryCreateEditDTO categoryCreateEditDTO);
-        Task EditCategoryAsync(int categoryId, CategoryShowAdminDTO categoryShowAdminDTO);
+        Task EditCategoryAsync(int categoryId, CategoryCreateEditDTO categoryCreateEditDTO);
         Task DeleteCategoryAsync(int categoryId);
         Task<CategoryShowDTO> GetCategoryByIdAsync(int categoryId);
     }
