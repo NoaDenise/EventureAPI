@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace EventureAPI
@@ -18,6 +19,8 @@ namespace EventureAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
+
+            // Configure DbContext
             builder.Services.AddDbContext<EventureContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext"));
@@ -28,6 +31,7 @@ namespace EventureAPI
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            // Configure Authentication (JWT)
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -43,24 +47,68 @@ namespace EventureAPI
                     };
                 });
 
-            builder.Services.AddIdentityCore<User>(options =>
+            // Configure Identity (User and Roles)
+            //builder.Services.AddIdentityCore<User>(options =>
+            //    {
+            //        options.User.RequireUniqueEmail = true;
+            //        //options.Password.RequiredLength = 8;
+            //    })
+            //  .AddRoles<IdentityRole>()
+            //  .AddEntityFrameworkStores<EventureContext>()
+            //  .AddDefaultTokenProviders();
+
+
+
+
+            //Configure Identity(User and Roles)
+            builder.Services.AddIdentity<User, IdentityRole>(
+                options =>
                 {
                     options.User.RequireUniqueEmail = true;
-                    //options.Password.RequiredLength = 8;
+                    //options.Password.RequiredLength = 8; // Password requirements can be added here
                 })
-              .AddRoles<IdentityRole>()
-              .AddEntityFrameworkStores<EventureContext>()
-              .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<EventureContext>()
+                .AddDefaultTokenProviders();  // Includes password reset tokens, etc.
 
-            // Register RoleManager and UserManager
+            // Register RoleManager and UserManager (though this is typically unnecessary with AddIdentity)
             builder.Services.AddScoped<RoleManager<IdentityRole>>();
             builder.Services.AddScoped<UserManager<User>>();
 
 
-
+            builder.Services.AddAuthorization();
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            // Swagger configuration to define JWT authentication for the API
+            builder.Services.AddSwaggerGen(c =>
+            {
+                // Define the security scheme for JWT in Swagger UI
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,  // The JWT token will be passed in the header
+                    Name = "Authorization", // The name of the header
+                    Type = SecuritySchemeType.ApiKey, // Type of security (API key used for JWT)
+                    Scheme = "Bearer", // The authentication scheme used (Bearer Token)
+                    BearerFormat = "JWT", // Specify that the format is JWT
+                    Description = "Please enter JWT with Bearer into field" // Description for the user in Swagger UI 
+                });
+
+                // Define that the API requires a Bearer token for authentication
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,  // Referencing the defined security scheme "Bearer"
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }  // No specific scopes required
+                    }
+                });
+            });
 
             //Adding scope for repo and services
             builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -74,39 +122,19 @@ namespace EventureAPI
 
             builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
             builder.Services.AddScoped<IActivityService, ActivityService>();
-
-            builder.Services.AddAuthorization();
-            builder.Services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<EventureContext>()
-                .AddDefaultTokenProviders();
-
-            // L�gger till repository och service f�r rating
+           
+     
             builder.Services.AddScoped<IRatingRepository, RatingRepository>();
             builder.Services.AddScoped<IRatingService, RatingService>();
 
             builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
             builder.Services.AddScoped<IActivityService, ActivityService>();
 
-
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             var app = builder.Build();
-
-            // Create roles 
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var logger = services.GetRequiredService<ILogger<Program>>();
-                try
-                {
-                    CreateRolesAsync(services).Wait();
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "An error occurred while creating roles.");
-                }
-            }
+          
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -125,36 +153,6 @@ namespace EventureAPI
 
             app.Run();
         }
-        // Create roles 
 
-        private static async Task CreateRolesAsync(IServiceProvider serviceProvider)
-        {
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
-
-
-            string[] roleNames = { "admin", "user" };
-            foreach (var roleName in roleNames)
-            {
-                var roleExists = await roleManager.RoleExistsAsync(roleName);
-                if (!roleExists)
-                {
-                    await roleManager.CreateAsync(new IdentityRole(roleName));
-                }
-            }
-
-            // Optionally, create a default admin user
-            var adminEmail = "admin@example.com";
-            var adminUser = await userManager.FindByEmailAsync(adminEmail);
-            if (adminUser == null)
-            {
-                var newAdmin = new User { UserName = "admin", Email = adminEmail };
-                var result = await userManager.CreateAsync(newAdmin, "Admin@1234"); 
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(newAdmin, "admin");
-                }
-            }
-        }
     }
 }
