@@ -24,6 +24,11 @@ namespace EventureAPI.Services.IServices
 
         // ny metod för att använda query i sökning
         Task<IQueryable<Activity>> GetActivitiesQueryableAsync();
+        Task<IEnumerable<ActivityCategoryShowDTO>> GetAllActivityCategoriesAsync();
+        Task<IEnumerable<ActivityCategoryShowCategoriesDTO>> GetActivitysCategoriesAsync(int activityId);
+        Task<ActivityCategoryShowDTO> GetActivityCategoryByIdAsync(int activityCategoryId);
+        Task AddActivityCategoryAsync(ActivityCategoryCreateDTO activityCategoryCreateDTO);
+        Task DeleteActivityCategoryAsync(int activityCategoryId);
 
     }
 }

@@ -19,7 +19,10 @@ namespace EventureAPI.Data.Repositories.IRepositories
         Task<IEnumerable<Activity>> GetAllActivitiesAwaitingApprovalAsync(bool isApproved);
         Task ApproveActivityAsync(int activityId);
         Task<IQueryable<Activity>> GetActivitiesQueryableAsync();
-
-
+        Task<IEnumerable<ActivityCategory>> GetAllActivityCategoriesAsync();
+        Task<IEnumerable<ActivityCategory>> GetActivitysCategoriesAsync(int activityId);
+        Task<ActivityCategory> GetActivityCategoryByIdAsync(int activityCategoryId);
+        Task AddActivityCategoryAsync(ActivityCategory activityCategory);
+        Task DeleteActivityCategoryAsync(ActivityCategory activityCategory);
     }
 }

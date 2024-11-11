@@ -14,7 +14,7 @@ namespace EventureAPI.Data.Repositories.IRepositories
         Task<IEnumerable<Category>> GetUserPreferencesAsync(string userId);
         Task AddUserEvent(string userId, int activityId);
         Task <IEnumerable<int>> GetLikedActivities(string userId);
-        Task<IEnumerable<UserEvent>> GetAllUserEventsAsync();
+        Task<IEnumerable<UserEvent>> GetUsersSavedEventsAsync(string userId);
         Task<UserEvent> GetUserEventByIdAsync(int userEventId);
         Task DeleteUserEventAsync(UserEvent userEvent);
         Task<IEnumerable<UserEvent>> GetUserEventsByCategoryAsync(int categoryId);
