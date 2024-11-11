@@ -113,6 +113,7 @@ namespace EventureAPI.Data.Repositories
             .ToListAsync();
 
 
+        }
 
         public async Task<IEnumerable<UserEvent>> GetAllUserEventsAsync()
         {

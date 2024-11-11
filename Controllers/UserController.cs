@@ -183,6 +183,7 @@ namespace EventureAPI.Controllers
 
             // Return the liked activities (or just their ActivityIds) as a JSON response
             return Ok(likedActivities);
+        }
 
         //endpoint will be used on user's My pages, where they can they all activites they have saved/liked
         [HttpGet("getAllUserEvents")]
