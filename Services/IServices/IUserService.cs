@@ -20,7 +20,7 @@ namespace EventureAPI.Services.IServices
         Task AssignRoleToUserAsync(string userId, string role);
         Task AddUserEvent(string userId, int activityId);
         Task<IEnumerable<int>> GetLikedActivities(string userId);
-        Task<IEnumerable<UserEventMyPagesDTO>> GetAllUserEventsAsync();
+        Task<IEnumerable<UserEventMyPagesDTO>> GetUsersSavedEventsAsync(string userId);
         Task<UserEventMyPagesDTO> GetUserEventByIdAsync(int userEventId);
         Task DeleteUserEventAsync(int userEventId);
         Task<IEnumerable<UserEventMyPagesDTO>> GetUserEventsByCategory(int categoryId);

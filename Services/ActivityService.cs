@@ -287,5 +287,73 @@ namespace EventureAPI.Services
             return _activityRepository.GetActivitiesQueryableAsync();
 
         }
+
+        public async Task<IEnumerable<ActivityCategoryShowDTO>> GetAllActivityCategoriesAsync()
+        {
+            var activityCategories = await _activityRepository.GetAllActivityCategoriesAsync();
+
+            return activityCategories.Select(a => new ActivityCategoryShowDTO
+            {
+               ActivityCategoryId = a.ActivityCategoryId,
+               ActivityId = a.ActivityId,
+               ActivityName = a.Activity.ActivityName,
+               CategoryId = a.Category.CategoryId,
+               CategoryName = a.Category.CategoryName
+            }).ToList();
+        }
+
+        public async Task<IEnumerable<ActivityCategoryShowCategoriesDTO>> GetActivitysCategoriesAsync(int activityId)
+        {
+            var activitysCategories = await _activityRepository.GetActivitysCategoriesAsync(activityId);
+
+            return activitysCategories.Select(a => new ActivityCategoryShowCategoriesDTO
+            {
+                CategoryId = a.CategoryId,
+                CategoryName= a.Category.CategoryName
+            }).ToList();
+        }
+
+        public async Task<ActivityCategoryShowDTO> GetActivityCategoryByIdAsync(int activityCategoryId)
+        {
+            var chosenActivityCategory = await _activityRepository.GetActivityCategoryByIdAsync(activityCategoryId);
+
+            if (chosenActivityCategory == null)
+            {
+                throw new Exception("Cannot find connection between specific activity and a category.");
+            }
+
+            return new ActivityCategoryShowDTO
+            {
+                ActivityCategoryId = chosenActivityCategory.ActivityCategoryId,
+                ActivityId = chosenActivityCategory.Activity.ActivityId,
+                ActivityName = chosenActivityCategory.Activity.ActivityName,
+                CategoryId = chosenActivityCategory.Category.CategoryId,
+                CategoryName = chosenActivityCategory.Category.CategoryName
+            };
+
+        }
+
+        public async Task AddActivityCategoryAsync(ActivityCategoryCreateDTO activityCategoryCreateDTO)
+        {
+            var newActivityCategory = new ActivityCategory
+            {
+                ActivityId = activityCategoryCreateDTO.ActivityId,
+                CategoryId = activityCategoryCreateDTO.CategoryId
+            };
+
+            await _activityRepository.AddActivityCategoryAsync(newActivityCategory);
+        }
+
+        public async Task DeleteActivityCategoryAsync(int activityCategoryId)
+        {
+            var activityCategoryToDelete = await _activityRepository.GetActivityCategoryByIdAsync(activityCategoryId);
+
+            if (activityCategoryToDelete == null)
+            {
+                throw new Exception($"Activity in combination with category with ID {activityCategoryId} not found");
+            }
+
+            await _activityRepository.DeleteActivityCategoryAsync(activityCategoryToDelete);
+        }
     }
 }

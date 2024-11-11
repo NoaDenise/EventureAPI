@@ -115,9 +115,9 @@ namespace EventureAPI.Data.Repositories
 
         }
 
-        public async Task<IEnumerable<UserEvent>> GetAllUserEventsAsync()
+        public async Task<IEnumerable<UserEvent>> GetUsersSavedEventsAsync(string userId)
         {
-            return await _context.UserEvents.Include(u => u.User).Include(a => a.Activity).ToListAsync();
+            return await _context.UserEvents.Include(u => u.User).Include(a => a.Activity).Where(a => a.UserId == userId).ToListAsync();
         }
 
         public async Task<UserEvent> GetUserEventByIdAsync(int userEventId)

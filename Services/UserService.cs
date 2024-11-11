@@ -229,9 +229,9 @@ namespace EventureAPI.Services
             return await _userRepo.GetLikedActivities(userId);
         }
 
-        public async Task<IEnumerable<UserEventMyPagesDTO>> GetAllUserEventsAsync()
+        public async Task<IEnumerable<UserEventMyPagesDTO>> GetUsersSavedEventsAsync(string userId)
         {
-            var userEvents = await _userRepo.GetAllUserEventsAsync();
+            var userEvents = await _userRepo.GetUsersSavedEventsAsync(userId);
 
             //if user looks at their list of liked activities, they will see this,
             //if they want to see details, they click into detailed activity-view in MVC

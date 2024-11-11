@@ -242,5 +242,73 @@ namespace EventureAPI.Controllers
             }
             return Ok(activities);
         }
+
+        [HttpGet("getAllActivityCategories")]
+        public async Task<ActionResult<ActivityCategoryShowDTO>> GetAllActivityCategories()
+        {
+            var activityCategory = await _activityService.GetAllActivityCategoriesAsync();
+
+            return Ok(activityCategory);
+        }
+
+        [HttpGet("getActivitysCategories")]
+        public async Task<ActionResult<ActivityCategoryShowCategoriesDTO>> GetActivitysCategories(int activityId)
+        {
+            var activitysCategories = await _activityService.GetActivitysCategoriesAsync(activityId);
+
+            if (activitysCategories == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(activitysCategories);
+        }
+
+        [HttpGet("getActivityCategoryById")]
+        public async Task<ActionResult<ActivityCategoryShowDTO>> GetActivityCategoryById(int activityCategoryId)
+        {
+            var chosenActivityCategory = await _activityService.GetActivityCategoryByIdAsync(activityCategoryId);
+
+            if (chosenActivityCategory == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(chosenActivityCategory);
+        }
+
+        [HttpPost("addActivityCategory")]
+        public async Task<ActionResult> AddActivityCategory([FromBody] ActivityCategoryCreateDTO activityCategoryCreateDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                await _activityService.AddActivityCategoryAsync(activityCategoryCreateDTO);
+                return Created();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error in handling in handling request");
+            }
+
+        }
+
+        [HttpDelete("deleteActivityCategory")]
+        public async Task<ActionResult> DeleteActivityCategory(int activityCategoryId)
+        {
+            try
+            {
+                await _activityService.DeleteActivityCategoryAsync(activityCategoryId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error in handling request");
+            }
+        }
     }
 }

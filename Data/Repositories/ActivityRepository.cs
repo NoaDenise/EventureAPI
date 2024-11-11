@@ -141,5 +141,32 @@ namespace EventureAPI.Data.Repositories
             return _context.Activities.AsQueryable();
 
         }
+
+        public async Task<IEnumerable<ActivityCategory>> GetAllActivityCategoriesAsync()
+        {
+            return await _context.ActivityCategories.Include(a => a.Activity).Include(a => a.Category).ToListAsync();
+        }
+
+        public async Task<IEnumerable<ActivityCategory>> GetActivitysCategoriesAsync(int activityId)
+        {
+            return await _context.ActivityCategories.Include(a => a.Category).Where(a => a.ActivityId == activityId).ToListAsync();
+        }
+
+        public async Task<ActivityCategory> GetActivityCategoryByIdAsync(int activityCategoryId)
+        {
+            return await _context.ActivityCategories.Include(a => a.Activity).Include(a => a.Category).SingleOrDefaultAsync(a => a.ActivityCategoryId == activityCategoryId);
+        }
+
+        public async Task AddActivityCategoryAsync(ActivityCategory activityCategory)
+        {
+            await _context.ActivityCategories.AddAsync(activityCategory);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteActivityCategoryAsync(ActivityCategory activityCategory)
+        {
+            _context.ActivityCategories.Remove(activityCategory);
+            await _context.SaveChangesAsync();
+        }
     }
 }

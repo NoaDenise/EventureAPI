@@ -187,9 +187,9 @@ namespace EventureAPI.Controllers
 
         //endpoint will be used on user's My pages, where they can they all activites they have saved/liked
         [HttpGet("getAllUserEvents")]
-        public async Task<ActionResult<IEnumerable<UserEvent>>> GetAllUserEvents()
+        public async Task<ActionResult<IEnumerable<UserEvent>>> GetAllUserEvents(string userId)
         {
-            var userEvents = await _userService.GetAllUserEventsAsync();
+            var userEvents = await _userService.GetUsersSavedEventsAsync(userId);
 
             return Ok(userEvents);
         }
