@@ -104,6 +104,16 @@ namespace EventureAPI.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+        //temporary method
+        public async Task<IEnumerable<int>> GetLikedActivities(string userId)
+        {
+            return await _context.UserEvents
+            .Where(ue => ue.UserId == userId)
+            .Select(ue => ue.ActivityId)
+            .ToListAsync();
+
+
+
         public async Task<IEnumerable<UserEvent>> GetAllUserEventsAsync()
         {
             return await _context.UserEvents.Include(u => u.User).Include(a => a.Activity).ToListAsync();

@@ -4,6 +4,7 @@ using EventureAPI.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Security.Claims;
 
@@ -167,6 +168,22 @@ namespace EventureAPI.Controllers
             return Ok();
         }
 
+
+        [HttpGet("likedActivities/{userId}")]
+        public async Task<IActionResult> GetLikedActivities(string userId)
+        {
+            // Call the service method to get the liked activities
+            var likedActivities = await _userService.GetLikedActivities(userId);
+
+            // If no liked activities are found, return a NotFound status with a message
+            if (likedActivities == null || !likedActivities.Any())
+            {
+                return NotFound(new { message = "No liked activities found." });
+            }
+
+            // Return the liked activities (or just their ActivityIds) as a JSON response
+            return Ok(likedActivities);
+
         //endpoint will be used on user's My pages, where they can they all activites they have saved/liked
         [HttpGet("getAllUserEvents")]
         public async Task<ActionResult<IEnumerable<UserEvent>>> GetAllUserEvents()
@@ -212,6 +229,7 @@ namespace EventureAPI.Controllers
             {
                 return StatusCode(500, "Error in handling request");
             }
+
         }
     }
 }

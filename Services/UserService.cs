@@ -224,6 +224,11 @@ namespace EventureAPI.Services
             await _userRepo.AddUserEvent(userId, activityId);
         }
 
+        public async Task<IEnumerable<int>> GetLikedActivities(string userId)
+        {
+            return await _userRepo.GetLikedActivities(userId);
+        }
+
         public async Task<IEnumerable<UserEventMyPagesDTO>> GetAllUserEventsAsync()
         {
             var userEvents = await _userRepo.GetAllUserEventsAsync();
