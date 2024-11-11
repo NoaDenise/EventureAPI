@@ -2,6 +2,7 @@
 using EventureAPI.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace EventureAPI.Controllers
@@ -133,6 +134,22 @@ namespace EventureAPI.Controllers
             await _userService.AddUserEvent(userId, activityId);
             
             return Ok();
+        }
+
+        [HttpGet("likedActivities/{userId}")]
+        public async Task<IActionResult> GetLikedActivities(string userId)
+        {
+            // Call the service method to get the liked activities
+            var likedActivities = await _userService.GetLikedActivities(userId);
+
+            // If no liked activities are found, return a NotFound status with a message
+            if (likedActivities == null || !likedActivities.Any())
+            {
+                return NotFound(new { message = "No liked activities found." });
+            }
+
+            // Return the liked activities (or just their ActivityIds) as a JSON response
+            return Ok(likedActivities);
         }
     }
 }

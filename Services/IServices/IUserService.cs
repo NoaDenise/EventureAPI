@@ -20,6 +20,6 @@ namespace EventureAPI.Services.IServices
         Task AssignRoleToUserAsync(string userId, string role);
 
         Task AddUserEvent(string userId, int activityId);
-
+        Task<IEnumerable<int>> GetLikedActivities(string userId);
     }
 }
