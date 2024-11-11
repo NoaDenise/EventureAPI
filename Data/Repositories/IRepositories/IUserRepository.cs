@@ -13,8 +13,11 @@ namespace EventureAPI.Data.Repositories.IRepositories
         Task AddCategoryToUserAsync(string userId, int categoryId);
         Task<IEnumerable<Category>> GetUserPreferencesAsync(string userId);
         Task AddUserEvent(string userId, int activityId);
-
         Task <IEnumerable<int>> GetLikedActivities(string userId);
+        Task<IEnumerable<UserEvent>> GetAllUserEventsAsync();
+        Task<UserEvent> GetUserEventByIdAsync(int userEventId);
+        Task DeleteUserEventAsync(UserEvent userEvent);
+        Task<IEnumerable<UserEvent>> GetUserEventsByCategoryAsync(int categoryId);
 
     }
 }

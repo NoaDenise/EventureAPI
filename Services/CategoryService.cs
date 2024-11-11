@@ -6,6 +6,7 @@ using EventureAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using EventureAPI.Data.Repositories;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace EventureAPI.Services
 {
@@ -78,6 +79,7 @@ namespace EventureAPI.Services
         }
 
         // Method to edit an existing category
+        //Q trying with categorysaDTO because it has ID in it
         public async Task EditCategoryAsync(int categoryId, CategoryCreateEditDTO categoryCreateEditDTO)
         {
             // Retrieve the category from the repository
@@ -90,7 +92,7 @@ namespace EventureAPI.Services
                 throw new KeyNotFoundException($"Category with ID {categoryId} not found.");
             }
             // Update category properties from the DTO
- 
+
             category.CategoryName = categoryCreateEditDTO.CategoryName;
             category.CategoryDescription = categoryCreateEditDTO.CategoryDescription;
 
@@ -103,6 +105,8 @@ namespace EventureAPI.Services
                 _logger.LogError($"An error occurred while editing the Category: {ex.Message}");
                 throw;
             }
+
+
         }
         // Method to retrieve all categories
         //Quynh used categoryshowadminDto for MVC
@@ -141,12 +145,14 @@ namespace EventureAPI.Services
 
             var categoryDTO = new CategoryShowDTO
             {
-                
+
                 CategoryName = category.CategoryName,
                 CategoryDescription = category.CategoryDescription
             };
 
             return categoryDTO;
+
+
         }
     }
 }

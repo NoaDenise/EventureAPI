@@ -19,6 +19,7 @@ namespace EventureAPI.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _config;
+        private readonly ILogger _logger;
 
         public UserService(IUserRepository userRepo, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config)
         {
@@ -28,12 +29,14 @@ namespace EventureAPI.Services
             _config = config;
         }
 
+        //added field for Id, if MVC is listing users on Admin pages
         public async Task<IEnumerable<UserShowDTO>> GetAllUsersAsync()
         {
             var allUsers = await _userRepo.GetAllUsersAsync();
 
             return allUsers.Select(u => new UserShowDTO
             {
+                Id = u.Id,
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,
@@ -123,7 +126,12 @@ namespace EventureAPI.Services
                 return token;  // Return the generated token
             }
             // If login fails
-            return null;
+            else
+            {
+                
+                _logger.LogWarning($"Login failed for user {email}. Reason: {result.ToString()}");
+                return null;
+            }
         }
 
 
@@ -215,9 +223,71 @@ namespace EventureAPI.Services
         {
             await _userRepo.AddUserEvent(userId, activityId);
         }
+
         public async Task<IEnumerable<int>> GetLikedActivities(string userId)
         {
             return await _userRepo.GetLikedActivities(userId);
+        }
+
+        public async Task<IEnumerable<UserEventMyPagesDTO>> GetAllUserEventsAsync()
+        {
+            var userEvents = await _userRepo.GetAllUserEventsAsync();
+
+            //if user looks at their list of liked activities, they will see this,
+            //if they want to see details, they click into detailed activity-view in MVC
+            return userEvents.Select(userEvent => new UserEventMyPagesDTO
+            {
+                ActivityName = userEvent.Activity.ActivityName,
+                ActivityLocation = userEvent.Activity.ActivityLocation,
+                DateOfActivity = userEvent.Activity.DateOfActivity
+
+            }).ToList();
+        }
+
+        public async Task<UserEventMyPagesDTO> GetUserEventByIdAsync(int userEventId)
+        {
+            var userEvent = await _userRepo.GetUserEventByIdAsync(userEventId);
+
+            if (userEvent == null)
+            {
+                throw new Exception($"User's liked activity not found.");
+            }
+
+            return new UserEventMyPagesDTO
+            {
+                ActivityName = userEvent.Activity.ActivityName,
+                ActivityLocation = userEvent.Activity.ActivityLocation,
+                DateOfActivity = userEvent.Activity.DateOfActivity
+            };
+        }
+
+        public async Task DeleteUserEventAsync(int userEventId)
+        {
+            var userEventToDelete = await _userRepo.GetUserEventByIdAsync(userEventId);
+
+            if (userEventToDelete == null)
+            {
+                throw new Exception("Something went wrong, when trying to find liked activity");
+            }
+
+            await _userRepo.DeleteUserEventAsync(userEventToDelete);
+        }
+
+        public async Task<IEnumerable<UserEventMyPagesDTO>> GetUserEventsByCategory(int categoryId)
+        {
+            var userEvents = await _userRepo.GetUserEventsByCategoryAsync(categoryId);
+
+            if (userEvents == null)
+            {
+                throw new Exception("Something went wrong, when trying to find liked activities");
+            }
+
+            return userEvents.Select(userEvent => new UserEventMyPagesDTO
+            {
+                ActivityName = userEvent.Activity.ActivityName,
+                ActivityLocation = userEvent.Activity.ActivityLocation,
+                DateOfActivity = userEvent.Activity.DateOfActivity
+            }).ToList();
         }
     }
 }

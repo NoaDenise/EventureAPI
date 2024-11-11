@@ -1,9 +1,12 @@
-﻿using EventureAPI.Models.DTOs;
+﻿using EventureAPI.Models;
+using EventureAPI.Models.DTOs;
 using EventureAPI.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Security.Claims;
 
 namespace EventureAPI.Controllers
 {
@@ -56,6 +59,7 @@ namespace EventureAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginUserDTO login)
         {
+            // Call the UserService to authenticate the user and generate a JWT token
             var token = await _userService.LoginAsync(login.Email, login.Password);
             if (token != null)
             {
@@ -88,11 +92,15 @@ namespace EventureAPI.Controllers
             }
         }
 
+
+
+        // This method assigns a new role to a user
         [HttpPost("{userId}/assignRole")]
         public async Task<IActionResult> AssignRoleToUser(string userId, [FromBody] string role)
         {
             try
             {
+                // Attempt to assign the role to the user via the UserService
                 await _userService.AssignRoleToUserAsync(userId, role);
                 return Ok(new { message = "Role assigned successfully." });
             }
@@ -100,6 +108,30 @@ namespace EventureAPI.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+        [Authorize]// Only authorized users can access this endpoint
+        [HttpGet("getRole")]
+        public async Task<IActionResult> GetUserRole()
+        {
+            // Retrieve the user ID from the JWT token (which is automatically provided by the authentication system)
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // If the user ID is not found in the JWT token, return an Unauthorized response
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User ID not found.");
+            }
+
+            // Call the UserService to get the roles associated with the user ID
+            var roles = await _userService.GetUserRolesAsync(userId);
+
+            if (roles == null || !roles.Any())
+            {
+                return NotFound("Roles not found for the user.");
+            }
+
+            // Return the first role from the roles list (if the user has multiple roles, this can be adjusted)
+            return Ok(new { role = roles.First() });
         }
 
         // POST: api/user/{userId}/categories/{categoryId}
@@ -136,6 +168,7 @@ namespace EventureAPI.Controllers
             return Ok();
         }
 
+
         [HttpGet("likedActivities/{userId}")]
         public async Task<IActionResult> GetLikedActivities(string userId)
         {
@@ -150,6 +183,53 @@ namespace EventureAPI.Controllers
 
             // Return the liked activities (or just their ActivityIds) as a JSON response
             return Ok(likedActivities);
+
+        //endpoint will be used on user's My pages, where they can they all activites they have saved/liked
+        [HttpGet("getAllUserEvents")]
+        public async Task<ActionResult<IEnumerable<UserEvent>>> GetAllUserEvents()
+        {
+            var userEvents = await _userService.GetAllUserEventsAsync();
+
+            return Ok(userEvents);
+        }
+
+        [HttpGet("getUserEventById")]
+        public async Task<ActionResult<UserEvent>> GetUserEventById(int userEventId)
+        {
+            var userEvent = await _userService.GetUserEventByIdAsync(userEventId);
+
+            return Ok(userEvent);
+        }
+
+        //this endpoint will be used on user's My pages, where they can delete saved/liked Activity
+        [HttpDelete("deleteUserEvent")]
+        public async Task<ActionResult> DeleteUserEvent(int userEventId)
+        {
+            try
+            {
+                await _userService.DeleteUserEventAsync(userEventId);
+                return Ok("Liked activity removed from your list.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error in handling request.");
+            }
+        }
+
+        //this endpoint will be used on user's My pages to sort saved activities by category
+        [HttpGet("getUserEventsByCategory")]
+        public async Task<ActionResult<IEnumerable<UserEvent>>> GetUserEventsByCategory(int catergoryId)
+        {
+            try
+            {
+                var userEvents = await _userService.GetUserEventsByCategory(catergoryId);
+                return Ok(userEvents);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error in handling request");
+            }
+
         }
     }
 }

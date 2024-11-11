@@ -57,7 +57,10 @@ namespace EventureAPI.Controllers
             try
             {
                 await _categoryService.AddCategoryAsync(categoryCreateEditDTO);
-                return CreatedAtAction(nameof(GetCategoryById), new { id = categoryCreateEditDTO.CategoryName }, new { message = "Category added successfully." }); 
+                //CategoryName should be CategoryId?
+                //return CreatedAtAction(nameof(GetCategoryById), new { id = categoryCreateEditDTO.CategoryName }, new { message = "Category added successfully." }); 
+
+                return Ok("Category created");
             }
             catch (Exception ex)
             {
