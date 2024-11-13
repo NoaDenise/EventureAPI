@@ -239,7 +239,8 @@ namespace EventureAPI.Services
             {
                 ActivityName = userEvent.Activity.ActivityName,
                 ActivityLocation = userEvent.Activity.ActivityLocation,
-                DateOfActivity = userEvent.Activity.DateOfActivity
+                DateOfActivity = userEvent.Activity.DateOfActivity,
+                UserEventId = userEvent.UserEventId
 
             }).ToList();
         }
