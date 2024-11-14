@@ -46,6 +46,18 @@ namespace EventureAPI.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task EditAdminInfoAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task EditAdminPasswordAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
         // Finds a user by id
         public async Task<User> GetUserByIdAsync(string userId)
         {
