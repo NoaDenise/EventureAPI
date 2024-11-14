@@ -84,16 +84,17 @@ namespace EventureAPI.Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task AddUserEvent(string userId, int activityId)
+        public async Task<int> AddUserEvent(string userId, int activityId)
         {
-            bool exists  = await _context.UserEvents
-                .AnyAsync(ue => ue.UserId == userId && ue.ActivityId == activityId);
+            var existingUserEvent = await _context.UserEvents
+                .FirstOrDefaultAsync(ue => ue.UserId == userId && ue.ActivityId == activityId);
 
-            if (exists)
+            if (existingUserEvent != null)
             {
-                return;
+                throw new InvalidOperationException("User has already liked this event.");
             }
 
+            // Create a new UserEvent
             var userEvent = new UserEvent
             {
                 UserId = userId,
@@ -102,6 +103,8 @@ namespace EventureAPI.Data.Repositories
 
             _context.UserEvents.Add(userEvent);
             await _context.SaveChangesAsync();
+
+            return userEvent.UserEventId; // Return the UserEventId after creation
         }
 
         //temporary method
@@ -134,6 +137,23 @@ namespace EventureAPI.Data.Repositories
         public async Task<IEnumerable<UserEvent>> GetUserEventsByCategoryAsync(int categoryId)
         {
             return await _context.UserEvents.Include(u => u.User).Include(a => a.Activity).Include(ac => ac.Activity.ActivityCategories).ToListAsync();
+        }
+
+
+        // Also deletes/removes a userEvent but uses a different input to do so
+        public async Task<bool> RemoveUserEvent(string userId, int activityId)
+        {
+            var userEvent = await _context.UserEvents
+                .FirstOrDefaultAsync(ue => ue.UserId == userId && ue.ActivityId == activityId);
+
+            if (userEvent == null)
+            {
+                return false;
+            }
+
+            _context.UserEvents.Remove(userEvent);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
