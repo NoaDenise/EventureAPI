@@ -5,6 +5,7 @@ using EventureAPI.Models.DTOs;
 using EventureAPI.Services.IServices;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -85,6 +86,39 @@ namespace EventureAPI.Services
             
             await _userRepo.EditUserAsync(user);
         }
+
+        //needs other fields for admin-mvc (than user-mvc)
+        public async Task EditAdminInfoAsync(string userId, AdminEditInfoDTO adminEditInfoDTO)
+        {
+            var user = await _userRepo.GetUserByIdAsync(userId);
+
+            user.FirstName = adminEditInfoDTO.FirstName;
+            user.LastName = adminEditInfoDTO.LastName;
+            user.PhoneNumber = adminEditInfoDTO.PhoneNumber;
+
+
+
+            await _userRepo.EditAdminInfoAsync(user);
+        }
+
+        public async Task EditAdminPasswordAsync(string userId, AdminEditPasswordDTO adminEditPasswordDTO)
+        {
+            var user = await _userRepo.GetUserByIdAsync(userId);
+
+            //if these fields are filled in - try to update password
+            if (!string.IsNullOrEmpty(adminEditPasswordDTO.CurrentPassword) && !string.IsNullOrEmpty(adminEditPasswordDTO.NewPassword))
+            {
+                var result = await _userManager.ChangePasswordAsync(user, adminEditPasswordDTO.CurrentPassword, adminEditPasswordDTO.NewPassword);
+
+                if (!result.Succeeded)
+                {
+                    throw new Exception("Could not update password. Fields not correctly filled out.");
+                }
+            }
+
+            await _userRepo.EditAdminPasswordAsync(user);
+        }
+
 
         public async Task<UserShowDTO> GetUserByIdAsync(string userId)
         {

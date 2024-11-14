@@ -7,6 +7,8 @@ namespace EventureAPI.Data.Repositories.IRepositories
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task AddUserAsync(User user);
         Task EditUserAsync(User user);
+        Task EditAdminInfoAsync(User user);
+        Task EditAdminPasswordAsync(User user);
         Task DeleteUserAsync(string userId);
         Task<User> GetUserByIdAsync(string userId);
         Task<User> GetUserByEmailAsync(string email);

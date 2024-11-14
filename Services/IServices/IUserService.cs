@@ -9,6 +9,8 @@ namespace EventureAPI.Services.IServices
         Task<IEnumerable<UserShowDTO>> GetAllUsersAsync();
         Task AddUserAsync(UserCreateEditDTO userDto);
         Task EditUserAsync(string userId, UserCreateEditDTO userDto);
+        Task EditAdminInfoAsync(string userId, AdminEditInfoDTO adminEditInfoDTO);
+        Task EditAdminPasswordAsync(string userId, AdminEditPasswordDTO adminEditPasswordDTO);
         Task DeleteUserAsync(string userId);
         Task<UserShowDTO> GetUserByIdAsync(string userId);
         Task<string> LoginAsync(string email, string password);

@@ -42,6 +42,35 @@ namespace EventureAPI.Controllers
             return Ok();
         }
 
+        [HttpPut("editAdminInfo/{userId}")]
+        public async Task<ActionResult> EditAdminInfo(string userId, [FromBody] AdminEditInfoDTO adminEditInfoDTO)
+        {
+            try
+            {
+                await _userService.EditAdminInfoAsync(userId, adminEditInfoDTO);
+                return Ok("Admin information updated.");
+            }
+            catch (Exception ex) 
+            { 
+                return BadRequest("Could not update information");
+            }
+        }
+
+        //separated password from info, because it will easier with error handling
+        [HttpPut("editAdminPassword/{userId}")]
+        public async Task<ActionResult> EditAdminPassword(string userId, [FromBody] AdminEditPasswordDTO adminEditPasswordDTO)
+        {
+            try
+            {
+                await _userService.EditAdminPasswordAsync(userId, adminEditPasswordDTO);
+                return Ok("Admin information updated.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Could not update information");
+            }
+        }
+
         [HttpPut("editUser/{userId}")]
         public async Task<ActionResult> EditUser(string userId, UserCreateEditDTO user)
         {
