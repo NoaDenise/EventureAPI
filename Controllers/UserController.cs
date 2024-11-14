@@ -261,5 +261,24 @@ namespace EventureAPI.Controllers
             }
 
         }
+
+        [HttpPost("toggleLike/{userId}/{activityId}/{isLiked}")]
+        public async Task<IActionResult> ToggleLike(string userId, int activityId, bool isLiked)
+        {
+            if (isLiked)
+            {
+                var userEventId = await _userService.AddUserEvent(userId, activityId);
+                return Ok(new { success = true, userEventId });
+            }
+            else
+            {
+                bool isDeleted = await _userService.RemoveUserEvent(userId, activityId);
+                if (isDeleted)
+                {
+                    return Ok(new { success = true });
+                }
+                return NotFound(new { success = false, message = "No user event found to be deleted" });
+            }
+        }
     }
 }

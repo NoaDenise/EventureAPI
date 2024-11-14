@@ -253,9 +253,9 @@ namespace EventureAPI.Services
         }
 
         //Connects User and Event together in the UserEvent table. (for likes in frontend)
-        public async Task AddUserEvent(string userId, int activityId)
+        public async Task<int> AddUserEvent(string userId, int activityId)
         {
-            await _userRepo.AddUserEvent(userId, activityId);
+            return await _userRepo.AddUserEvent(userId, activityId);
         }
 
         public async Task<IEnumerable<int>> GetLikedActivities(string userId)
@@ -323,6 +323,11 @@ namespace EventureAPI.Services
                 ActivityLocation = userEvent.Activity.ActivityLocation,
                 DateOfActivity = userEvent.Activity.DateOfActivity
             }).ToList();
+        }
+
+        public async Task<bool> RemoveUserEvent(string userId, int activityId)
+        {
+            return await _userRepo.RemoveUserEvent(userId, activityId);
         }
     }
 }
