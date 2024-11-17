@@ -71,18 +71,17 @@ namespace EventureAPI.Services
             await _userRepo.DeleteUserAsync(userId);
         }
 
-        public async Task EditUserAsync(string userId, UserCreateEditDTO userDto)
+        public async Task EditUserAsync(string userId, UserEditInfoDTO userEditInfoDto)
         {
             var user = await _userRepo.GetUserByIdAsync(userId);
 
             // Replace the current values with the new ones based on the DTO
-            user.FirstName = userDto.FirstName;
-            user.LastName = userDto.LastName;
-            user.Email = userDto.Email;
-            user.PhoneNumber = userDto.PhoneNumber;
-            user.UserName = userDto.UserName;
-            user.UserLocation = userDto.UserLocation;
-            user.PasswordHash = userDto.PasswordHash;
+            user.FirstName = userEditInfoDto.FirstName;
+            user.LastName = userEditInfoDto.LastName;
+            user.Email = userEditInfoDto.Email;
+            user.PhoneNumber = userEditInfoDto.PhoneNumber;
+            user.UserName = userEditInfoDto.UserName;
+            user.UserLocation = userEditInfoDto.UserLocation;
             
             await _userRepo.EditUserAsync(user);
         }
