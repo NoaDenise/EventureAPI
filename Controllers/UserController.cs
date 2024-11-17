@@ -72,9 +72,9 @@ namespace EventureAPI.Controllers
         }
 
         [HttpPut("editUser/{userId}")]
-        public async Task<ActionResult> EditUser(string userId, UserCreateEditDTO user)
+        public async Task<ActionResult> EditUser(string userId, UserEditInfoDTO userEditInfoDto)
         {
-            await _userService.EditUserAsync(userId, user);
+            await _userService.EditUserAsync(userId, userEditInfoDto);
             return Ok();
         }
 
