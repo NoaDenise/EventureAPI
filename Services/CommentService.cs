@@ -46,6 +46,7 @@ namespace EventureAPI.Services
 
             var commentDtos = comments.Select(comment => new CommentShowDTO
             {
+                CommentId = comment.CommentId,
                 CommentText = comment.CommentText,
                 CreatedAt = comment.CreatedAt,
                 UserName = comment.User?.UserName ?? "Unknown",
@@ -61,6 +62,7 @@ namespace EventureAPI.Services
 
             var commentDto = new CommentShowDTO
             {
+                CommentId = comment.CommentId,
                 CommentText = comment.CommentText,
                 CreatedAt = comment.CreatedAt,
                 UserName = comment.User.UserName,
