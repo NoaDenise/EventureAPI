@@ -155,7 +155,7 @@ namespace EventureAPI.Services
             if (result.Succeeded)
             {
                 // If login is successful, generate a JWT token
-                var token = GenerateJwtToken(user);
+                var token = await GenerateJwtToken(user);
                 return token;  // Return the generated token
             }
             // If login fails
@@ -195,18 +195,30 @@ namespace EventureAPI.Services
     
         }
 
-        private string GenerateJwtToken(User user)
+        private async Task<string> GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
+            // Get roles from Identity asynchronously
+            var roles = await _userManager.GetRolesAsync(user);  // Await the async call to get roles
+
+            // Initialize the claims list with the user's basic info
+            var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim(ClaimTypes.Name, user.UserName)
-                }),
+                };
+
+            // Add roles to the claims
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(1),  // Set an appropriate expiration time
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                 Issuer = _config["Jwt:Issuer"],
@@ -216,6 +228,8 @@ namespace EventureAPI.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+
         public async Task AddCategoryToUserAsync(string userId, int categoryId)
         {
             await _userRepo.AddCategoryToUserAsync(userId, categoryId);
