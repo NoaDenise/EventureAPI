@@ -35,6 +35,7 @@ namespace EventureAPI.Services
 
                 throw new ArgumentNullException(nameof(categoryCreateEditDTO), "categoryCreateEditDTO cannot be null.");
             }
+            _logger.LogError("Category service");
 
             // Create a new category object from the DTO
             var category = new Category
@@ -45,11 +46,12 @@ namespace EventureAPI.Services
 
             try
             {
+                _logger.LogError("Category service try");
                 await _categoryRepository.AddCategoryAsync(category);
             }
             catch (Exception ex)
             {
-
+                _logger.LogError("Category service catch");
                 Console.WriteLine($"An error occurred while adding the Category: {ex.Message}");
                 throw;
             }

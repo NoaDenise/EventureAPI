@@ -8,26 +8,31 @@ namespace EventureAPI.Data.Repositories
     {
         // Database context for accessing categories
         private readonly EventureContext _context;
+        private readonly ILogger _logger;
 
         // Constructor to initialize the database context
-        public CategoryRepository(EventureContext context)
+        public CategoryRepository(EventureContext context, ILogger logger)
         {
             _context = context;
+            _logger = logger;
         }
         // Method to add a new category to the database
         public async Task AddCategoryAsync(Category category)
         {
             if (category == null)
             {
+                _logger.LogError("Category repo null");
                 throw new ArgumentNullException(nameof(category), "Category cannot be null.");
             }
             try
             {
+                _logger.LogError("Category repo try");
                 await _context.Categories.AddAsync(category);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError("Category repo catch");
                 throw new InvalidOperationException("Failed to add category to the database.", ex);
             }
         }
