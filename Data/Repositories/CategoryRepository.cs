@@ -32,7 +32,7 @@ namespace EventureAPI.Data.Repositories
             }
             catch (DbUpdateException ex)
             {
-                _logger.LogError("Category repo catch");
+                _logger.LogError("Category repo catch", ex);
                 throw new InvalidOperationException("Failed to add category to the database.", ex);
             }
         }
