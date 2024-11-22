@@ -8,10 +8,10 @@ namespace EventureAPI.Data.Repositories
     {
         // Database context for accessing categories
         private readonly EventureContext _context;
-        private readonly ILogger _logger;
+        private readonly ILogger <CategoryRepository>_logger;
 
         // Constructor to initialize the database context
-        public CategoryRepository(EventureContext context, ILogger logger)
+        public CategoryRepository(EventureContext context, ILogger<CategoryRepository> logger)
         {
             _context = context;
             _logger = logger;
