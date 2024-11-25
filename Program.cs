@@ -58,6 +58,15 @@ namespace EventureAPI
             //  .AddDefaultTokenProviders();
 
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin", policy =>
+                {
+                    policy.WithOrigins("https://eventure.azurewebsites.net") // Allow frontend URL
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
 
             //Configure Identity(User and Roles)
@@ -134,7 +143,8 @@ namespace EventureAPI
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             var app = builder.Build();
-          
+
+            app.UseCors("AllowSpecificOrigin");
 
             // Configure the HTTP request pipeline.
             app.UseSwagger();
