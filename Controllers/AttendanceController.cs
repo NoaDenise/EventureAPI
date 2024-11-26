@@ -140,5 +140,13 @@ namespace EventureAPI.Controllers
 
             return Ok(attendance);
         }
+
+        [HttpGet("checkIfAttendanceExists/{userId}, {activityId}")]
+        public async Task<ActionResult> AttendanceExists(string userId, int activityId)
+        {
+            var attendanceExists = await _attendanceService.AttendanceExistsAsync(userId, activityId);
+
+            return Ok(attendanceExists);
+        }
     }
 }

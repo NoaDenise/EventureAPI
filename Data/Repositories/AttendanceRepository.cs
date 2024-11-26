@@ -51,5 +51,11 @@ namespace EventureAPI.Data.Repositories
         {
             return await _context.Attendances.Include(a => a.Activity).Where(a => a.UserId == userId).ToListAsync();
         }
+
+        //checks so that attendance with user-activity-combo doesn't already exist
+        public async Task<bool> AttendanceExistsAsync(string userId, int activityId)
+        {
+            return await _context.Attendances.AnyAsync(a => a.UserId == userId && a.ActivityId == activityId);
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace EventureAPI.Data.Repositories.IRepositories
         Task<Attendance> GetAttendanceByIdAsync(int attendanceId);
         Task<IEnumerable<Attendance>> GetAttendanceByActivityAsync(int activityId);
         Task<IEnumerable<Attendance>> GetUsersAttendanceAsync(string userId);
+        Task<bool> AttendanceExistsAsync(string userId, int activityId);
     }
 }

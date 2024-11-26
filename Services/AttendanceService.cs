@@ -19,12 +19,12 @@ namespace EventureAPI.Services
         }
         public async Task AddAttendanceAsync(AttendanceCreateEditDTO attendanceDto)
         {
-            //var existingAttendance = await _attendanceRepository.Find - måste kolla att user inte redan gjort en atten.
+            var attendanceExists = await _attendanceRepository.AttendanceExistsAsync(attendanceDto.UserId, attendanceDto.ActivityId);
 
-            //if (existingAttendance != null)
-            //{
-            //    throw new Exception("User ia already attending")
-            //}
+            if (attendanceExists)
+            {
+                throw new InvalidOperationException("Attendance for this activity and user already exists");
+            }
 
             var newAttendance = new Attendance
             {
@@ -132,6 +132,12 @@ namespace EventureAPI.Services
                 ActivityLocation = a.Activity.ActivityLocation,
                 DateOfActivity = a.Activity.DateOfActivity
             }).ToList();
+        }
+
+        public async Task<bool> AttendanceExistsAsync(string userId, int activityId)
+        {
+            return await _attendanceRepository.AttendanceExistsAsync(userId, activityId);
+
         }
     }
 }
