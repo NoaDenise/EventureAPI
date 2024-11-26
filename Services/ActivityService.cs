@@ -54,7 +54,8 @@ namespace EventureAPI.Services
                 ContactInfo = a.ContactInfo,
                 IsFree = a.IsFree,
                 Is18Plus = a.Is18Plus,
-                IsFamilyFriendly = a.IsFamilyFriendly
+                IsFamilyFriendly = a.IsFamilyFriendly,
+                IsApproved = a.IsApproved
             }).ToList();
         }
 

@@ -15,6 +15,7 @@ namespace EventureAPI.Models.DTOs
         public bool IsFree { get; set; }
         public bool Is18Plus { get; set; }
         public bool IsFamilyFriendly { get; set; }
+        public bool IsApproved { get; set; }
 
     }
 }
