@@ -30,6 +30,24 @@ namespace EventureAPI.Data.Repositories
         // 2. Ta bort en aktivitet (ska denna va asynkron?)
         public async Task DeleteActivityAsync(Activity activity)
         {
+            //had to have filter before adding navigationproperties
+            //now we will be able to delete activity (since comments, attendances and ratings are connected to activity)
+            var activityToDelete = _context.Activities    
+                .Where(a => a.ActivityId == activity.ActivityId)
+                .Include(a => a.Attendances)
+                .Include(a => a.Comments)
+                .Include(a => a.Ratings)
+                .FirstOrDefault();
+
+            if (activityToDelete == null)
+            {
+                throw new Exception("Activity not found");
+            }
+
+            //added the other connections to be removed before removing the activity itself
+            _context.Attendances.RemoveRange(activityToDelete.Attendances);
+            _context.Comments.RemoveRange(activityToDelete.Comments);
+            _context.Ratings.RemoveRange(activityToDelete.Ratings);
             _context.Activities.Remove(activity);
             await _context.SaveChangesAsync();  // Sparar förändringar synkront eftersom det inte är async
         }

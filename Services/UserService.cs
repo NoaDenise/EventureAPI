@@ -104,16 +104,12 @@ namespace EventureAPI.Services
         {
             var user = await _userRepo.GetUserByIdAsync(userId);
 
-            //if these fields are filled in - try to update password
-            if (!string.IsNullOrEmpty(adminEditPasswordDTO.CurrentPassword) && !string.IsNullOrEmpty(adminEditPasswordDTO.NewPassword))
-            {
                 var result = await _userManager.ChangePasswordAsync(user, adminEditPasswordDTO.CurrentPassword, adminEditPasswordDTO.NewPassword);
 
                 if (!result.Succeeded)
                 {
                     throw new Exception("Could not update password. Fields not correctly filled out.");
                 }
-            }
 
             await _userRepo.EditAdminPasswordAsync(user);
         }
